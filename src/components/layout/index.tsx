@@ -1,7 +1,14 @@
-function MainLayout() {
-  const name : string = "sebastian";
+import NavBar from "../navbar";
 
-  return <div>{name}</div>;
+function MainLayout() {
+  const name : string = "Hola Mundo";
+
+  return <div>
+    <NavBar />
+    <main>
+      <h1>Welcome, {name}!</h1>
+    </main>
+  </div>;
 }
 
 export default MainLayout;
