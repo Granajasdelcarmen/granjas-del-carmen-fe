@@ -1,6 +1,6 @@
 import { apiService } from './api';
 import { API_ENDPOINTS } from 'src/config/api';
-import { Rabbit } from 'src/types/api';
+import { Rabbit, RabbitCreate, RabbitUpdate, ApiResponse } from 'src/types/api';
 
 class RabbitService {
   /**
@@ -8,7 +8,7 @@ class RabbitService {
    */
   async getRabbits(): Promise<Rabbit[]> {
     try {
-      const rabbits = await apiService.get<Rabbit[]>(API_ENDPOINTS.RABBITS);
+      const rabbits = await apiService.getBackendResponse<Rabbit[]>(API_ENDPOINTS.RABBITS);
       return rabbits;
     } catch (error) {
       console.error('Error fetching rabbits:', error);
@@ -17,24 +17,50 @@ class RabbitService {
   }
 
   /**
-   * Add a new rabbit
+   * Get rabbit by ID
    */
-  async addRabbit(rabbitData: Partial<Rabbit>): Promise<Rabbit> {
+  async getRabbitById(id: string): Promise<Rabbit> {
     try {
-      const rabbit = await apiService.post<Rabbit>(API_ENDPOINTS.RABBITS_ADD, rabbitData);
+      const rabbit = await apiService.getBackendResponse<Rabbit>(API_ENDPOINTS.RABBIT_BY_ID(id));
       return rabbit;
     } catch (error) {
-      console.error('Error adding rabbit:', error);
+      console.error('Error fetching rabbit:', error);
       throw error;
     }
   }
 
   /**
-   * Update a rabbit
+   * Get rabbits by gender
    */
-  async updateRabbit(id: string, rabbitData: Partial<Rabbit>): Promise<Rabbit> {
+  async getRabbitsByGender(gender: 'MALE' | 'FEMALE'): Promise<Rabbit[]> {
     try {
-      const rabbit = await apiService.put<Rabbit>(`${API_ENDPOINTS.RABBITS}/${id}`, rabbitData);
+      const rabbits = await apiService.getBackendResponse<Rabbit[]>(API_ENDPOINTS.RABBITS_BY_GENDER(gender));
+      return rabbits;
+    } catch (error) {
+      console.error('Error fetching rabbits by gender:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create a new rabbit
+   */
+  async createRabbit(rabbitData: RabbitCreate): Promise<Rabbit> {
+    try {
+      const rabbit = await apiService.postBackendResponse<Rabbit>(API_ENDPOINTS.RABBITS_ADD, rabbitData);
+      return rabbit;
+    } catch (error) {
+      console.error('Error creating rabbit:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update rabbit by ID
+   */
+  async updateRabbit(id: string, rabbitData: RabbitUpdate): Promise<Rabbit> {
+    try {
+      const rabbit = await apiService.putBackendResponse<Rabbit>(API_ENDPOINTS.RABBIT_BY_ID(id), rabbitData);
       return rabbit;
     } catch (error) {
       console.error('Error updating rabbit:', error);
@@ -43,14 +69,26 @@ class RabbitService {
   }
 
   /**
-   * Delete a rabbit
+   * Delete rabbit by ID
    */
-  async deleteRabbit(id: string): Promise<{ message: string }> {
+  async deleteRabbit(id: string): Promise<void> {
     try {
-      const result = await apiService.delete<{ message: string }>(`${API_ENDPOINTS.RABBITS}/${id}`);
-      return result;
+      await apiService.deleteBackendResponse<void>(API_ENDPOINTS.RABBIT_BY_ID(id));
     } catch (error) {
       console.error('Error deleting rabbit:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get rabbits with full response (including message)
+   */
+  async getRabbitsWithMessage(): Promise<ApiResponse<Rabbit[]>> {
+    try {
+      const response = await apiService.getFullResponse<Rabbit[]>(API_ENDPOINTS.RABBITS);
+      return response;
+    } catch (error) {
+      console.error('Error fetching rabbits with message:', error);
       throw error;
     }
   }

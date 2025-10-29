@@ -27,6 +27,7 @@ class AuthService {
    */
   async getCurrentUser(): Promise<AuthUser | null> {
     try {
+      // El backend devuelve directamente el usuario, no envuelto en ApiResponse
       const response = await apiService.get<AuthUser>(API_ENDPOINTS.AUTH_ME);
       this.setUser(response);
       return response;

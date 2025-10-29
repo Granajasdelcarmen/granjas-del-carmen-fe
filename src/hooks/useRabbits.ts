@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rabbitService } from 'src/services/rabbitService';
-import { Rabbit } from 'src/types/api';
+import { Rabbit, RabbitCreate, RabbitUpdate } from 'src/types/api';
 
 // Query keys
 export const rabbitKeys = {
@@ -9,6 +9,7 @@ export const rabbitKeys = {
   list: (filters: string) => [...rabbitKeys.lists(), { filters }] as const,
   details: () => [...rabbitKeys.all, 'detail'] as const,
   detail: (id: string) => [...rabbitKeys.details(), id] as const,
+  byGender: (gender: string) => [...rabbitKeys.all, 'gender', gender] as const,
 };
 
 // Hook para obtener todos los conejos
@@ -20,14 +21,33 @@ export const useRabbits = () => {
   });
 };
 
+// Hook para obtener un conejo por ID
+export const useRabbit = (id: string) => {
+  return useQuery({
+    queryKey: rabbitKeys.detail(id),
+    queryFn: () => rabbitService.getRabbitById(id),
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+// Hook para obtener conejos por género
+export const useRabbitsByGender = (gender: 'MALE' | 'FEMALE') => {
+  return useQuery({
+    queryKey: rabbitKeys.byGender(gender),
+    queryFn: () => rabbitService.getRabbitsByGender(gender),
+    enabled: !!gender,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
 // Hook para crear un conejo
-export const useAddRabbit = () => {
+export const useCreateRabbit = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (rabbitData: Partial<Rabbit>) => rabbitService.addRabbit(rabbitData),
+    mutationFn: (rabbitData: RabbitCreate) => rabbitService.createRabbit(rabbitData),
     onSuccess: (newRabbit) => {
-      // Invalidar y refetch la lista de conejos
       queryClient.invalidateQueries({ queryKey: rabbitKeys.lists() });
       console.log('Conejo creado:', newRabbit);
     },
@@ -42,11 +62,11 @@ export const useUpdateRabbit = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<Rabbit> }) => 
-      rabbitService.updateRabbit(id, data),
-    onSuccess: (updatedRabbit) => {
-      // Invalidar y refetch la lista de conejos
+    mutationFn: ({ id, rabbitData }: { id: string; rabbitData: RabbitUpdate }) => 
+      rabbitService.updateRabbit(id, rabbitData),
+    onSuccess: (updatedRabbit, { id }) => {
       queryClient.invalidateQueries({ queryKey: rabbitKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: rabbitKeys.detail(id) });
       console.log('Conejo actualizado:', updatedRabbit);
     },
     onError: (error) => {
@@ -61,10 +81,10 @@ export const useDeleteRabbit = () => {
 
   return useMutation({
     mutationFn: (id: string) => rabbitService.deleteRabbit(id),
-    onSuccess: () => {
-      // Invalidar y refetch la lista de conejos
+    onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: rabbitKeys.lists() });
-      console.log('Conejo eliminado exitosamente');
+      queryClient.invalidateQueries({ queryKey: rabbitKeys.detail(id) });
+      console.log('Conejo eliminado');
     },
     onError: (error) => {
       console.error('Error al eliminar conejo:', error);
