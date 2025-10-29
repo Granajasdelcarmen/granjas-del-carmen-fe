@@ -8,7 +8,8 @@ class InventoryService {
    */
   async getInventory(): Promise<Inventory[]> {
     try {
-      const inventory = await apiService.get<Inventory[]>(API_ENDPOINTS.INVENTORY);
+      const inventory = await apiService.getBackendResponse<Inventory[]>(API_ENDPOINTS.INVENTORY);
+      console.log('InventoryService - getInventory response:', inventory);
       return inventory;
     } catch (error) {
       console.error('Error fetching inventory:', error);
@@ -21,7 +22,7 @@ class InventoryService {
    */
   async getInventoryById(id: string): Promise<Inventory> {
     try {
-      const item = await apiService.get<Inventory>(API_ENDPOINTS.INVENTORY_BY_ID(id));
+      const item = await apiService.getBackendResponse<Inventory>(API_ENDPOINTS.INVENTORY_BY_ID(id));
       return item;
     } catch (error) {
       console.error('Error fetching inventory item:', error);
@@ -34,7 +35,7 @@ class InventoryService {
    */
   async createInventoryItem(itemData: InventoryCreate): Promise<Inventory> {
     try {
-      const item = await apiService.post<Inventory>(API_ENDPOINTS.INVENTORY, itemData);
+      const item = await apiService.postBackendResponse<Inventory>(API_ENDPOINTS.INVENTORY, itemData);
       return item;
     } catch (error) {
       console.error('Error creating inventory item:', error);
@@ -47,7 +48,7 @@ class InventoryService {
    */
   async updateInventoryItem(id: string, itemData: Partial<InventoryCreate>): Promise<Inventory> {
     try {
-      const item = await apiService.put<Inventory>(API_ENDPOINTS.INVENTORY_BY_ID(id), itemData);
+      const item = await apiService.putBackendResponse<Inventory>(API_ENDPOINTS.INVENTORY_BY_ID(id), itemData);
       return item;
     } catch (error) {
       console.error('Error updating inventory item:', error);
@@ -60,7 +61,7 @@ class InventoryService {
    */
   async deleteInventoryItem(id: string): Promise<void> {
     try {
-      await apiService.delete<void>(API_ENDPOINTS.INVENTORY_BY_ID(id));
+      await apiService.deleteBackendResponse<void>(API_ENDPOINTS.INVENTORY_BY_ID(id));
     } catch (error) {
       console.error('Error deleting inventory item:', error);
       throw error;

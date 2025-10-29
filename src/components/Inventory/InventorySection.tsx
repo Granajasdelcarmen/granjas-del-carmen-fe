@@ -6,16 +6,21 @@ export function InventorySection() {
   const { data: items, isLoading, error, isError } = useInventory();
   const refetchInventory = useRefetchInventory();
 
+  // Debug log
+  console.log('InventorySection - items:', items);
+  console.log('InventorySection - isLoading:', isLoading);
+  console.log('InventorySection - error:', error);
+
   const handleRefetch = () => {
     refetchInventory();
   };
 
   const getLowStockCount = () => {
-    return items?.filter(item => item.quantity < 10).length || 0;
+    return Array.isArray(items) ? items.filter(item => item.quantity < 10).length : 0;
   };
 
   const getOutOfStockCount = () => {
-    return items?.filter(item => item.quantity === 0).length || 0;
+    return Array.isArray(items) ? items.filter(item => item.quantity === 0).length : 0;
   };
 
   return (
@@ -25,7 +30,7 @@ export function InventorySection() {
           <div>
             <h2 className="text-xl font-semibold text-gray-900">Inventario</h2>
             <p className="text-sm text-gray-500">
-              Gestiona el inventario de la granja ({items?.length || 0} items)
+              Gestiona el inventario de la granja ({Array.isArray(items) ? items.length : 0} items)
             </p>
             {(getLowStockCount() > 0 || getOutOfStockCount() > 0) && (
               <div className="flex space-x-4 mt-2">

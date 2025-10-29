@@ -33,8 +33,8 @@ export function InventoryCard({ item, onEdit, onDelete }: InventoryCardProps) {
           </div>
           
           <div className="text-xs text-gray-400 mt-3">
-            <p>Creado: {new Date(item.created_at).toLocaleDateString()}</p>
-            <p>Actualizado: {new Date(item.updated_at).toLocaleDateString()}</p>
+            <p>Creado: {item.created_at ? new Date(item.created_at).toLocaleDateString() : 'No especificado'}</p>
+            <p>Actualizado: {item.updated_at ? new Date(item.updated_at).toLocaleDateString() : 'No especificado'}</p>
           </div>
         </div>
         

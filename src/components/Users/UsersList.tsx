@@ -29,7 +29,7 @@ export function UsersList({ users, isLoading, onEditUser, onDeleteUser }: UsersL
     );
   }
 
-  if (users.length === 0) {
+  if (!Array.isArray(users) || users.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="text-gray-400 text-6xl mb-4">👥</div>
@@ -41,14 +41,14 @@ export function UsersList({ users, isLoading, onEditUser, onDeleteUser }: UsersL
 
   return (
     <div className="space-y-4">
-      {users.map((user) => (
+      {Array.isArray(users) ? users.map((user) => (
         <UserCard
           key={user.id}
           user={user}
           onEdit={onEditUser}
           onDelete={onDeleteUser}
         />
-      ))}
+      )) : null}
     </div>
   );
 }

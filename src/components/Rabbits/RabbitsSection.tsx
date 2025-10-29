@@ -33,11 +33,11 @@ export function RabbitsSection() {
   const getFilterCount = () => {
     switch (genderFilter) {
       case 'MALE':
-        return maleRabbits?.length || 0;
+        return Array.isArray(maleRabbits) ? maleRabbits.length : 0;
       case 'FEMALE':
-        return femaleRabbits?.length || 0;
+        return Array.isArray(femaleRabbits) ? femaleRabbits.length : 0;
       default:
-        return allRabbits?.length || 0;
+        return Array.isArray(allRabbits) ? allRabbits.length : 0;
     }
   };
 

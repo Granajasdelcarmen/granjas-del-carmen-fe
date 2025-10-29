@@ -29,7 +29,7 @@ export function RabbitsList({ rabbits, isLoading, onEditRabbit, onDeleteRabbit }
     );
   }
 
-  if (rabbits.length === 0) {
+  if (!Array.isArray(rabbits) || rabbits.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="text-gray-400 text-6xl mb-4">🐰</div>
@@ -41,14 +41,14 @@ export function RabbitsList({ rabbits, isLoading, onEditRabbit, onDeleteRabbit }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {rabbits.map((rabbit) => (
+      {Array.isArray(rabbits) ? rabbits.map((rabbit) => (
         <RabbitCard
           key={rabbit.id}
           rabbit={rabbit}
           onEdit={onEditRabbit}
           onDelete={onDeleteRabbit}
         />
-      ))}
+      )) : null}
     </div>
   );
 }

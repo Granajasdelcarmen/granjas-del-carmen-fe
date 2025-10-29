@@ -29,7 +29,7 @@ export function InventoryList({ items, isLoading, onEditItem, onDeleteItem }: In
     );
   }
 
-  if (items.length === 0) {
+  if (!Array.isArray(items) || items.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="text-gray-400 text-6xl mb-4">📦</div>
@@ -41,14 +41,14 @@ export function InventoryList({ items, isLoading, onEditItem, onDeleteItem }: In
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {items.map((item) => (
+      {Array.isArray(items) ? items.map((item) => (
         <InventoryCard
           key={item.id}
           item={item}
           onEdit={onEditItem}
           onDelete={onDeleteItem}
         />
-      ))}
+      )) : null}
     </div>
   );
 }
