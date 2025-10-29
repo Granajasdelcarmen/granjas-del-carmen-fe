@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { API_CONFIG } from '../config/api';
+import { API_CONFIG } from '@/config/api';
 
 class ApiService {
   private api: AxiosInstance;

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { rabbitService } from '../services/rabbitService';
-import { Rabbit } from '../types/api';
+import { rabbitService } from '@/services/rabbitService';
+import { Rabbit } from '@/types/api';
 
 // Query keys
 export const rabbitKeys = {

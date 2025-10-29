@@ -1,6 +1,6 @@
 import { apiService } from './api';
-import { API_ENDPOINTS } from '../config/api';
-import { User } from '../types/api';
+import { API_ENDPOINTS } from '@/config/api';
+import { User } from '@/types/api';
 
 class UserService {
   /**

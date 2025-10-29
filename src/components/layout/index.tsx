@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUsers, useSeedUser, useRefetchUsers } from '../../hooks/useUsers';
+import { useUsers, useSeedUser, useRefetchUsers } from '@/hooks/useUsers';
 
 function MainLayout() {
   const { data: users, isLoading, error, isError } = useUsers();
