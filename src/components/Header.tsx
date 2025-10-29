@@ -12,6 +12,16 @@ export function Header() {
     isLoggingOut,
   } = useAuthContext();
 
+  console.log("user", user);
+  console.log("isAuthenticated", isAuthenticated);
+  console.log("isLoading", isLoading);
+  console.log("isLoggingIn", isLoggingIn);
+  console.log("isLoggingOut", isLoggingOut);
+  console.log("login", login);
+  console.log("logout", logout);
+  console.log("isLoggingIn", isLoggingIn);
+  console.log("isLoggingOut", isLoggingOut);
+
   return (
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
