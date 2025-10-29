@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { API_CONFIG } from '@/config/api';
+import { API_CONFIG } from 'src/config/api';
 
 class ApiService {
   private api: AxiosInstance;
@@ -16,11 +16,11 @@ class ApiService {
     // Interceptor para requests
     this.api.interceptors.request.use(
       (config) => {
-        // Aquí puedes agregar tokens de autenticación si es necesario
-        // const token = localStorage.getItem('token');
-        // if (token) {
-        //   config.headers.Authorization = `Bearer ${token}`;
-        // }
+        // Agregar token de autenticación automáticamente
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
         return config;
       },
       (error) => {

@@ -1,6 +1,6 @@
 import { apiService } from './api';
-import { API_ENDPOINTS } from '@/config/api';
-import { Rabbit } from '@/types/api';
+import { API_ENDPOINTS } from 'src/config/api';
+import { Rabbit } from 'src/types/api';
 
 class RabbitService {
   /**
