@@ -1,7 +1,14 @@
 import React from 'react';
 import { useAuthContext } from './auth/AuthProvider';
 
-export function Header() {
+import { Page } from 'src/hooks/useNavigation';
+
+interface HeaderProps {
+  currentPage: Page;
+  onPageChange: (page: Page) => void;
+}
+
+export function Header({ currentPage, onPageChange }: HeaderProps) {
   const {
     user,
     isAuthenticated,
@@ -11,16 +18,6 @@ export function Header() {
     isLoggingIn,
     isLoggingOut,
   } = useAuthContext();
-
-  console.log("user", user);
-  console.log("isAuthenticated", isAuthenticated);
-  console.log("isLoading", isLoading);
-  console.log("isLoggingIn", isLoggingIn);
-  console.log("isLoggingOut", isLoggingOut);
-  console.log("login", login);
-  console.log("logout", logout);
-  console.log("isLoggingIn", isLoggingIn);
-  console.log("isLoggingOut", isLoggingOut);
 
   return (
     <header className="bg-white shadow-sm border-b">
@@ -35,15 +32,36 @@ export function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <a href="#" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+            <button
+              onClick={() => onPageChange('inicio')}
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                currentPage === 'inicio'
+                  ? 'text-blue-600 bg-blue-50'
+                  : 'text-gray-500 hover:text-gray-900'
+              }`}
+            >
               Inicio
-            </a>
-            <a href="#" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-              Conejos
-            </a>
-            <a href="#" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-              Usuarios
-            </a>
+            </button>
+            <button
+              onClick={() => onPageChange('administracion')}
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                currentPage === 'administracion'
+                  ? 'text-blue-600 bg-blue-50'
+                  : 'text-gray-500 hover:text-gray-900'
+              }`}
+            >
+              Administración
+            </button>
+            <button
+              onClick={() => onPageChange('perfil')}
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                currentPage === 'perfil'
+                  ? 'text-blue-600 bg-blue-50'
+                  : 'text-gray-500 hover:text-gray-900'
+              }`}
+            >
+              Perfil
+            </button>
           </nav>
 
           {/* Auth Button */}

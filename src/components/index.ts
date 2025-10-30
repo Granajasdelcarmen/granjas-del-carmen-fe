@@ -17,6 +17,9 @@ export { InventoryCard } from './Inventory/InventoryCard';
 export { InventoryList } from './Inventory/InventoryList';
 export { InventorySection } from './Inventory/InventorySection';
 
+// Admin Components
+export { AdminSidebar } from './Admin/AdminSidebar';
+
 // Layout Components
 export { Header } from './Header';
 export { default as MainLayout } from './layout';
