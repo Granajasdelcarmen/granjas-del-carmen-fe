@@ -81,6 +81,48 @@ export const useDeleteInventoryItem = () => {
   });
 };
 
+// Hook para reemplazar la cantidad exacta
+export const useUpdateItemQuantity = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, quantity }: { id: string; quantity: number }) =>
+      inventoryService.updateItemQuantity(id, quantity),
+    onSuccess: (_updated, { id }) => {
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.detail(id) });
+    },
+  });
+};
+
+// Hook para agregar cantidad
+export const useAddItemQuantity = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, amount }: { id: string; amount: number }) =>
+      inventoryService.addItemQuantity(id, amount),
+    onSuccess: (_updated, { id }) => {
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.detail(id) });
+    },
+  });
+};
+
+// Hook para restar cantidad
+export const useSubtractItemQuantity = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, amount }: { id: string; amount: number }) =>
+      inventoryService.subtractItemQuantity(id, amount),
+    onSuccess: (_updated, { id }) => {
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.detail(id) });
+    },
+  });
+};
+
 // Hook para refetch manual del inventario
 export const useRefetchInventory = () => {
   const queryClient = useQueryClient();

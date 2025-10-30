@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRabbits, useRabbitsByGender, useRefetchRabbits } from 'src/hooks/useRabbits';
 import { RabbitsList } from './RabbitsList';
+import { RabbitCreateModal } from './RabbitCreateModal';
 
 export function RabbitsSection() {
   const [genderFilter, setGenderFilter] = useState<'ALL' | 'MALE' | 'FEMALE'>('ALL');
@@ -13,6 +14,7 @@ export function RabbitsSection() {
   const { data: femaleRabbits, isLoading: isLoadingFemale } = useRabbitsByGender('FEMALE');
   
   const refetchRabbits = useRefetchRabbits();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const getCurrentData = () => {
     switch (genderFilter) {
@@ -56,6 +58,12 @@ export function RabbitsSection() {
           </div>
           
           <div className="flex space-x-3">
+            <button
+              onClick={() => setIsCreateOpen(true)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Añadir conejo
+            </button>
             <select
               value={genderFilter}
               onChange={(e) => setGenderFilter(e.target.value as 'ALL' | 'MALE' | 'FEMALE')}
@@ -82,9 +90,20 @@ export function RabbitsSection() {
             <button
               onClick={handleRefetch}
               disabled={isLoading}
-              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title={isLoading ? 'Cargando...' : 'Actualizar'}
+              aria-label={isLoading ? 'Cargando' : 'Actualizar'}
             >
-              {isLoading ? 'Cargando...' : 'Actualizar'}
+              {isLoading ? (
+                'Cargando...'
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="w-5 h-5 transition-transform duration-300 hover:rotate-180">
+                  <path d="M16.023 9.348h4.992V4.356" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M2.25 12a9.75 9.75 0 0 1 16.5-6.864" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M7.977 14.652H2.985v4.992" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M21.75 12a9.75 9.75 0 0 1-16.5 6.864" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
@@ -104,7 +123,10 @@ export function RabbitsSection() {
             </button>
           </div>
         ) : (
-          <RabbitsList rabbits={rabbits || []} isLoading={isLoading} />
+          <>
+            <RabbitsList rabbits={rabbits || []} isLoading={isLoading} />
+            <RabbitCreateModal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
+          </>
         )}
       </div>
     </div>

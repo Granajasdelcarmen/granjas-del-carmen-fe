@@ -38,7 +38,7 @@ export function RabbitCard({ rabbit, onEdit, onDelete, onView }: RabbitCardProps
 
   return (
     <div 
-      className="bg-white rounded-lg shadow-sm border p-5 hover:shadow-md transition-shadow cursor-pointer"
+      className="bg-white rounded-lg shadow-sm border p-3 hover:shadow-md transition-shadow cursor-pointer"
       onClick={() => onView?.(rabbit)}
     >
       <div className="flex items-start justify-between">

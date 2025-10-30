@@ -1,9 +1,8 @@
 import { apiService } from './api';
-import { API_ENDPOINTS } from 'src/config/api';
+import { API_ENDPOINTS, API_CONFIG } from 'src/config/api';
 import { AuthUser, LoginUrlResponse, LogoutUrlResponse } from 'src/types/api';
 
 class AuthService {
-  private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'auth_user';
 
   /**
@@ -29,6 +28,11 @@ class AuthService {
     try {
       // El backend devuelve directamente el usuario, no envuelto en ApiResponse
       const response = await apiService.get<AuthUser>(API_ENDPOINTS.AUTH_ME);
+      // Si el backend responde con claves nulas, lo tratamos como no autenticado
+      if (!response || !response.sub) {
+        this.clearAuth();
+        return null;
+      }
       this.setUser(response);
       return response;
     } catch (error) {
@@ -51,10 +55,12 @@ class AuthService {
    */
   async logout(): Promise<void> {
     try {
-      const logoutUrl = await this.getLogoutUrl();
       this.clearAuth();
-      // Redirigir al usuario a Auth0 logout
-      window.location.href = logoutUrl;
+      // Asegurar limpieza de la sesión del backend primero
+      // Redirigimos directo a /logout del BE (éste a su vez redirige a Auth0 y retorna al FE)
+      const apiBase = new URL(API_CONFIG.API_BASE_URL);
+      const apiOrigin = `${apiBase.protocol}//${apiBase.hostname}${apiBase.port ? `:${apiBase.port}` : ''}`;
+      window.location.href = `${apiOrigin}/logout`;
     } catch (error) {
       // Si falla, al menos limpiar el estado local
       this.clearAuth();
@@ -66,21 +72,7 @@ class AuthService {
    * Verificar si el usuario está autenticado
    */
   isAuthenticated(): boolean {
-    return !!this.getToken();
-  }
-
-  /**
-   * Obtener token del localStorage
-   */
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
-  }
-
-  /**
-   * Establecer token en localStorage
-   */
-  setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+    return !!this.getUser();
   }
 
   /**
@@ -102,7 +94,6 @@ class AuthService {
    * Limpiar datos de autenticación
    */
   clearAuth(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
   }
 

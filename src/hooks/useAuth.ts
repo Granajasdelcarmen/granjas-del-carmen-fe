@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService } from 'src/services/authService';
 
 export function useAuth() {
-  const [isInitialized, setIsInitialized] = useState(false);
   const queryClient = useQueryClient();
 
   const {
@@ -15,7 +14,7 @@ export function useAuth() {
   } = useQuery({
     queryKey: ['auth', 'user'],
     queryFn: () => authService.getCurrentUser(),
-    enabled: isInitialized,
+    enabled: true,
     retry: false,
     staleTime: 5 * 60 * 1000,
   });
@@ -34,14 +33,8 @@ export function useAuth() {
   });
 
   useEffect(() => {
-    const initAuth = async () => {
-      if (authService.isAuthenticated()) {
-        await refetchUser();
-      }
-      setIsInitialized(true);
-    };
-    initAuth();
-  }, [refetchUser]);
+    // Nada adicional: la cookie de sesión del BE define autenticación
+  }, []);
 
   const handleAuthCallback = async (): Promise<boolean> => {
     const success = await authService.handleAuthCallback();
@@ -53,8 +46,8 @@ export function useAuth() {
 
   return {
     user,
-    isAuthenticated: !!user,
-    isLoading: isLoading || !isInitialized,
+    isAuthenticated: !!(user && (user as any).sub),
+    isLoading,
     isError,
     error,
     login: loginMutation.mutate,

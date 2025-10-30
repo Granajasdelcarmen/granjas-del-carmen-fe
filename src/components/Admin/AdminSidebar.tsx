@@ -7,7 +7,10 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarProps) {
   const sections = [
-    { id: 'animales', label: 'Animales', icon: '🐰' },
+    { id: 'conejos', label: 'Conejos', icon: '🐰' },
+    { id: 'vacas', label: 'Vacas', icon: '🐄' },
+    { id: 'ovejas', label: 'Ovejas', icon: '🐑' },
+    { id: 'gallinas', label: 'Gallinas', icon: '🐔' },
     { id: 'inventario', label: 'Inventario', icon: '📦' }
   ];
 

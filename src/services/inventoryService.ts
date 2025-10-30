@@ -57,6 +57,45 @@ class InventoryService {
   }
 
   /**
+   * Replace item quantity with an exact value
+   */
+  async updateItemQuantity(id: string, quantity: number): Promise<Inventory> {
+    try {
+      const item = await apiService.putBackendResponse<Inventory>(`${API_ENDPOINTS.INVENTORY_BY_ID(id)}/quantity`, { quantity });
+      return item;
+    } catch (error) {
+      console.error('Error updating item quantity:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Add amount to item quantity
+   */
+  async addItemQuantity(id: string, amount: number): Promise<Inventory> {
+    try {
+      const item = await apiService.postBackendResponse<Inventory>(`${API_ENDPOINTS.INVENTORY_BY_ID(id)}/add`, { amount });
+      return item;
+    } catch (error) {
+      console.error('Error adding item quantity:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Subtract amount from item quantity
+   */
+  async subtractItemQuantity(id: string, amount: number): Promise<Inventory> {
+    try {
+      const item = await apiService.postBackendResponse<Inventory>(`${API_ENDPOINTS.INVENTORY_BY_ID(id)}/subtract`, { amount });
+      return item;
+    } catch (error) {
+      console.error('Error subtracting item quantity:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Delete inventory item by ID
    */
   async deleteInventoryItem(id: string): Promise<void> {

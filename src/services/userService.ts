@@ -67,18 +67,7 @@ class UserService {
     }
   }
 
-  /**
-   * Create a test user for development
-   */
-  async seedUser(): Promise<User> {
-    try {
-      const user = await apiService.getBackendResponse<User>(API_ENDPOINTS.USERS_SEED);
-      return user;
-    } catch (error) {
-      console.error('Error seeding user:', error);
-      throw error;
-    }
-  }
+  // Dev seed removed: we now work only with real data
 
   /**
    * Get users with full response (including message)

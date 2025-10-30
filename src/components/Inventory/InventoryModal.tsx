@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Inventory } from 'src/types/api';
 import { Modal } from 'src/components/Common/Modal';
+import { useAddItemQuantity, useSubtractItemQuantity, useUpdateItemQuantity } from 'src/hooks/useInventory';
 
 interface InventoryModalProps {
   item: Inventory | null;
@@ -11,6 +12,11 @@ interface InventoryModalProps {
 }
 
 export function InventoryModal({ item, isOpen, onClose, onEdit, onDelete }: InventoryModalProps) {
+  const addQty = useAddItemQuantity();
+  const subQty = useSubtractItemQuantity();
+  const setQty = useUpdateItemQuantity();
+  const [amount, setAmount] = useState<number | ''>('');
+  const [exact, setExact] = useState<number | ''>('');
   if (!item) return null;
 
   const getQuantityColor = (quantity: number) => {
@@ -137,6 +143,54 @@ export function InventoryModal({ item, isOpen, onClose, onEdit, onDelete }: Inve
             )}
           </div>
         )}
+
+        {/* Operaciones de cantidad */}
+        <div className="mt-4 pt-4 border-t border-gray-200 space-y-3">
+          <h3 className="text-sm font-semibold text-gray-900">Actualizar cantidad</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="flex items-center space-x-2">
+              <input
+                type="number"
+                min={1}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                className="w-24 border border-gray-300 rounded px-2 py-1"
+                placeholder="+/-"
+              />
+              <button
+                disabled={amount === '' || addQty.isPending}
+                onClick={() => addQty.mutate({ id: item.id, amount: Number(amount) }, { onSuccess: () => setAmount('') })}
+                className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+              >
+                + Agregar
+              </button>
+              <button
+                disabled={amount === '' || subQty.isPending}
+                onClick={() => subQty.mutate({ id: item.id, amount: Number(amount) }, { onSuccess: () => setAmount('') })}
+                className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 disabled:opacity-50"
+              >
+                - Restar
+              </button>
+            </div>
+            <div className="flex items-center space-x-2 md:col-span-2">
+              <input
+                type="number"
+                min={0}
+                value={exact}
+                onChange={(e) => setExact(e.target.value === '' ? '' : Number(e.target.value))}
+                className="w-24 border border-gray-300 rounded px-2 py-1"
+                placeholder="exacto"
+              />
+              <button
+                disabled={exact === '' || setQty.isPending}
+                onClick={() => setQty.mutate({ id: item.id, quantity: Number(exact) }, { onSuccess: () => setExact('') })}
+                className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+              >
+                Establecer
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </Modal>
   );

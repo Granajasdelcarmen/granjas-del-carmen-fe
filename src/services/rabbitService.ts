@@ -9,7 +9,7 @@ class RabbitService {
   async getRabbits(sortBy?: 'asc' | 'desc'): Promise<Rabbit[]> {
     try {
       const url = sortBy
-        ? `${API_ENDPOINTS.RABBITS}?sort_by=${encodeURIComponent(sortBy)}`
+        ? `${API_ENDPOINTS.RABBITS}?sort=${encodeURIComponent(sortBy)}`
         : API_ENDPOINTS.RABBITS;
       const rabbits = await apiService.getBackendResponse<Rabbit[]>(url);
       return rabbits;
@@ -35,9 +35,11 @@ class RabbitService {
   /**
    * Get rabbits by gender
    */
-  async getRabbitsByGender(gender: 'MALE' | 'FEMALE'): Promise<Rabbit[]> {
+  async getRabbitsByGender(gender: 'MALE' | 'FEMALE', sortBy?: 'asc' | 'desc'): Promise<Rabbit[]> {
     try {
-      const rabbits = await apiService.getBackendResponse<Rabbit[]>(API_ENDPOINTS.RABBITS_BY_GENDER(gender));
+      const base = API_ENDPOINTS.RABBITS_BY_GENDER(gender);
+      const url = sortBy ? `${base}?sort=${encodeURIComponent(sortBy)}` : base;
+      const rabbits = await apiService.getBackendResponse<Rabbit[]>(url);
       return rabbits;
     } catch (error) {
       console.error('Error fetching rabbits by gender:', error);

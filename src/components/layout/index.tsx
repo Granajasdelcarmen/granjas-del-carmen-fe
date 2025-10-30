@@ -4,9 +4,14 @@ import { useNavigation } from 'src/hooks/useNavigation';
 import { InicioPage } from 'src/pages/InicioPage';
 import { AdministracionPage } from 'src/pages/AdministracionPage';
 import { PerfilPage } from 'src/pages/PerfilPage';
+import { useAuth } from 'src/hooks/useAuth';
 
 function MainLayout() {
   const { currentPage, navigateTo } = useNavigation();
+  const { user } = useAuth();
+
+  // Debug user in layout
+  console.log('MainLayout:user', user);
 
   const renderPage = () => {
     switch (currentPage) {

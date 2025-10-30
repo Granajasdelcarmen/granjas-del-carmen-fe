@@ -68,22 +68,6 @@ export const useDeleteUser = () => {
   });
 };
 
-// Hook para crear un usuario de prueba
-export const useSeedUser = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: () => userService.seedUser(),
-    onSuccess: (newUser) => {
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
-      console.log('Usuario creado:', newUser);
-    },
-    onError: (error) => {
-      console.error('Error al crear usuario:', error);
-    },
-  });
-};
-
 // Hook para refetch manual de usuarios
 export const useRefetchUsers = () => {
   const queryClient = useQueryClient();

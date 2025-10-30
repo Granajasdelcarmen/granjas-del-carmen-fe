@@ -14,7 +14,6 @@ export const API_ENDPOINTS = {
   
   // User endpoints
   USERS: '/users',
-  USERS_SEED: '/users/seed',
   USER_BY_ID: (id: string) => `/users/${id}`,
   
   // Rabbit endpoints
