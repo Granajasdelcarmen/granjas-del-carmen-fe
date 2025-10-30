@@ -22,46 +22,48 @@ export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+    <div className="bg-white rounded-lg shadow-sm border p-3 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center space-x-3 mb-2">
-            <h3 className="text-lg font-semibold text-gray-900">{user.name || 'Sin nombre'}</h3>
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(user.role)}`}>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center space-x-2 mb-1">
+            <h3 className="text-sm font-semibold text-gray-900 truncate">{user.name || 'Sin nombre'}</h3>
+          </div>
+          
+          <div className="flex flex-wrap gap-1 mb-1">
+            <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${getRoleColor(user.role)}`}>
               {user.role}
             </span>
             {user.is_active ? (
-              <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              <span className="px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                 Activo
               </span>
             ) : (
-              <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+              <span className="px-1.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                 Inactivo
               </span>
             )}
           </div>
           
-          <p className="text-gray-600 mb-2">{user.email}</p>
+          <p className="text-xs text-gray-600 mb-1 truncate">{user.email}</p>
           
           {user.phone && (
-            <p className="text-sm text-gray-500 mb-2">📞 {user.phone}</p>
+            <p className="text-xs text-gray-500 mb-1">📞 {user.phone}</p>
           )}
           
           {user.address && (
-            <p className="text-sm text-gray-500 mb-3">📍 {user.address}</p>
+            <p className="text-xs text-gray-500 mb-2 truncate">📍 {user.address}</p>
           )}
           
           <div className="text-xs text-gray-400">
             <p>Creado: {new Date(user.created_at).toLocaleDateString()}</p>
-            <p>Actualizado: {new Date(user.updated_at).toLocaleDateString()}</p>
           </div>
         </div>
         
-        <div className="flex space-x-2 ml-4">
+        <div className="flex space-x-1 ml-2 flex-shrink-0">
           {onEdit && (
             <button
               onClick={() => onEdit(user)}
-              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
               title="Editar usuario"
             >
               ✏️
@@ -70,7 +72,7 @@ export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
           {onDelete && (
             <button
               onClick={() => onDelete(user.id)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
               title="Eliminar usuario"
             >
               🗑️

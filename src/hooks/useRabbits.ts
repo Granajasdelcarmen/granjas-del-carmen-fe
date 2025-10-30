@@ -7,16 +7,17 @@ export const rabbitKeys = {
   all: ['rabbits'] as const,
   lists: () => [...rabbitKeys.all, 'list'] as const,
   list: (filters: string) => [...rabbitKeys.lists(), { filters }] as const,
+  sorted: (order: 'asc' | 'desc' | undefined) => [...rabbitKeys.lists(), 'sorted', order ?? 'none'] as const,
   details: () => [...rabbitKeys.all, 'detail'] as const,
   detail: (id: string) => [...rabbitKeys.details(), id] as const,
   byGender: (gender: string) => [...rabbitKeys.all, 'gender', gender] as const,
 };
 
-// Hook para obtener todos los conejos
-export const useRabbits = () => {
+// Hook para obtener todos los conejos (con orden opcional)
+export const useRabbits = (sortBy?: 'asc' | 'desc') => {
   return useQuery({
-    queryKey: rabbitKeys.lists(),
-    queryFn: () => rabbitService.getRabbits(),
+    queryKey: rabbitKeys.sorted(sortBy),
+    queryFn: () => rabbitService.getRabbits(sortBy),
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 };

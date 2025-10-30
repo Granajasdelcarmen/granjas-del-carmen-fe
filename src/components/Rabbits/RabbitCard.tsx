@@ -5,9 +5,10 @@ interface RabbitCardProps {
   rabbit: Rabbit;
   onEdit?: (rabbit: Rabbit) => void;
   onDelete?: (rabbitId: string) => void;
+  onView?: (rabbit: Rabbit) => void;
 }
 
-export function RabbitCard({ rabbit, onEdit, onDelete }: RabbitCardProps) {
+export function RabbitCard({ rabbit, onEdit, onDelete, onView }: RabbitCardProps) {
   const getGenderIcon = (gender?: string) => {
     switch (gender) {
       case 'MALE':
@@ -36,55 +37,63 @@ export function RabbitCard({ rabbit, onEdit, onDelete }: RabbitCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+    <div 
+      className="bg-white rounded-lg shadow-sm border p-5 hover:shadow-md transition-shadow cursor-pointer"
+      onClick={() => onView?.(rabbit)}
+    >
       <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center space-x-3 mb-2">
-            <h3 className="text-lg font-semibold text-gray-900">{rabbit.name}</h3>
-            <span className="text-2xl">{getGenderIcon(rabbit.gender)}</span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center space-x-2 mb-1">
+            <h3 className="text-sm font-semibold text-gray-900 truncate">{rabbit.name}</h3>
+            <span className="text-lg flex-shrink-0">{getGenderIcon(rabbit.gender)}</span>
+          </div>
+          
+          <div className="flex flex-wrap gap-1 mb-1">
             {rabbit.gender && (
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getGenderColor(rabbit.gender)}`}>
+              <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${getGenderColor(rabbit.gender)}`}>
                 {rabbit.gender}
               </span>
             )}
             {rabbit.discarded && (
-              <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+              <span className="px-1.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                 Descartado
               </span>
             )}
           </div>
           
           {rabbit.image && (
-            <div className="mb-3">
+            <div className="mb-2">
               <img 
                 src={rabbit.image} 
                 alt={rabbit.name}
-                className="w-20 h-20 object-cover rounded-lg"
+                className="w-12 h-12 object-cover rounded"
               />
             </div>
           )}
           
-          <div className="space-y-1 text-sm text-gray-600">
-            <p><strong>Fecha de nacimiento:</strong> {formatDate(rabbit.birth_date)}</p>
+          <div className="space-y-0.5 text-xs text-gray-600">
+            <p><span className="font-medium">Nacimiento:</span> {formatDate(rabbit.birth_date)}</p>
             {rabbit.user_id && (
-              <p><strong>Propietario ID:</strong> {rabbit.user_id}</p>
+              <p><span className="font-medium">Propietario:</span> {rabbit.user_id}</p>
             )}
             {rabbit.discarded && rabbit.discarded_reason && (
-              <p className="text-red-600"><strong>Razón de descarte:</strong> {rabbit.discarded_reason}</p>
+              <p className="text-red-600"><span className="font-medium">Razón:</span> {rabbit.discarded_reason}</p>
             )}
           </div>
           
-          <div className="text-xs text-gray-400 mt-3">
+          <div className="text-xs text-gray-400 mt-2">
             <p>Creado: {new Date(rabbit.created_at).toLocaleDateString()}</p>
-            <p>Actualizado: {new Date(rabbit.updated_at).toLocaleDateString()}</p>
           </div>
         </div>
         
-        <div className="flex space-x-2 ml-4">
+        <div className="flex space-x-1 ml-2 flex-shrink-0">
           {onEdit && (
             <button
-              onClick={() => onEdit(rabbit)}
-              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(rabbit);
+              }}
+              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
               title="Editar conejo"
             >
               ✏️
@@ -92,8 +101,11 @@ export function RabbitCard({ rabbit, onEdit, onDelete }: RabbitCardProps) {
           )}
           {onDelete && (
             <button
-              onClick={() => onDelete(rabbit.id)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(rabbit.id);
+              }}
+              className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
               title="Eliminar conejo"
             >
               🗑️

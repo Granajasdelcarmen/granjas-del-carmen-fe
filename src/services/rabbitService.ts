@@ -6,9 +6,12 @@ class RabbitService {
   /**
    * Get all rabbits
    */
-  async getRabbits(): Promise<Rabbit[]> {
+  async getRabbits(sortBy?: 'asc' | 'desc'): Promise<Rabbit[]> {
     try {
-      const rabbits = await apiService.getBackendResponse<Rabbit[]>(API_ENDPOINTS.RABBITS);
+      const url = sortBy
+        ? `${API_ENDPOINTS.RABBITS}?sort_by=${encodeURIComponent(sortBy)}`
+        : API_ENDPOINTS.RABBITS;
+      const rabbits = await apiService.getBackendResponse<Rabbit[]>(url);
       return rabbits;
     } catch (error) {
       console.error('Error fetching rabbits:', error);

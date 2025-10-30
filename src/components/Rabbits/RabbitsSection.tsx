@@ -4,8 +4,11 @@ import { RabbitsList } from './RabbitsList';
 
 export function RabbitsSection() {
   const [genderFilter, setGenderFilter] = useState<'ALL' | 'MALE' | 'FEMALE'>('ALL');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'none'>('none');
   
-  const { data: allRabbits, isLoading: isLoadingAll, error: errorAll, isError: isErrorAll } = useRabbits();
+  const { data: allRabbits, isLoading: isLoadingAll, error: errorAll, isError: isErrorAll } = useRabbits(
+    sortOrder === 'none' ? undefined : sortOrder
+  );
   const { data: maleRabbits, isLoading: isLoadingMale } = useRabbitsByGender('MALE');
   const { data: femaleRabbits, isLoading: isLoadingFemale } = useRabbitsByGender('FEMALE');
   
@@ -62,6 +65,19 @@ export function RabbitsSection() {
               <option value="MALE">Macho</option>
               <option value="FEMALE">Hembra</option>
             </select>
+
+            {genderFilter === 'ALL' && (
+              <select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc' | 'none')}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                title="Ordenar por fecha de nacimiento"
+              >
+                <option value="none">Sin orden</option>
+                <option value="asc">Ascendente (nacimiento)</option>
+                <option value="desc">Descendente (nacimiento)</option>
+              </select>
+            )}
             
             <button
               onClick={handleRefetch}

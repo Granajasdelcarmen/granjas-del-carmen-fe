@@ -12,15 +12,15 @@ interface UsersListProps {
 export function UsersList({ users, isLoading, onEditUser, onDeleteUser }: UsersListProps) {
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-              <div className="flex-1 space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+        {[...Array(12)].map((_, i) => (
+          <div key={i} className="bg-white rounded-lg shadow-sm border p-3 animate-pulse">
+            <div className="flex items-start space-x-2">
+              <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
+              <div className="flex-1 space-y-1">
                 <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-2 bg-gray-200 rounded w-1/4"></div>
               </div>
             </div>
           </div>
@@ -40,7 +40,7 @@ export function UsersList({ users, isLoading, onEditUser, onDeleteUser }: UsersL
   }
 
   return (
-    <div className="space-y-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
       {Array.isArray(users) ? users.map((user) => (
         <UserCard
           key={user.id}
