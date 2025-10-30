@@ -18,7 +18,8 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
     isLoggingIn,
     isLoggingOut,
   } = useAuthContext();
-
+  const firstName = user.name.split(' ')[0]
+  
   return (
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -82,8 +83,7 @@ export function Header({ currentPage, onPageChange }: HeaderProps) {
                     />
                   )}
                   <div className="hidden sm:block">
-                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                    <p className="text-xs text-gray-500">{user.email}</p>
+                    <p className="text-sm font-medium text-gray-900">{firstName}</p>
                   </div>
                 </div>
                 

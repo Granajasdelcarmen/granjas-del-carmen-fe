@@ -1,5 +1,6 @@
 import React from 'react';
 import { Rabbit } from 'src/types/api';
+import { differenceInDays } from 'date-fns'
 
 interface RabbitCardProps {
   rabbit: Rabbit;
@@ -9,17 +10,6 @@ interface RabbitCardProps {
 }
 
 export function RabbitCard({ rabbit, onEdit, onDelete, onView }: RabbitCardProps) {
-  const getGenderIcon = (gender?: string) => {
-    switch (gender) {
-      case 'MALE':
-        return '♂️';
-      case 'FEMALE':
-        return '♀️';
-      default:
-        return '🐰';
-    }
-  };
-
   const getGenderColor = (gender?: string) => {
     switch (gender) {
       case 'MALE':
@@ -31,6 +21,10 @@ export function RabbitCard({ rabbit, onEdit, onDelete, onView }: RabbitCardProps
     }
   };
 
+const age = rabbit?.birth_date 
+  ? `${differenceInDays(new Date(), new Date(rabbit.birth_date))} días`
+  : "No disponible";
+ 
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'No especificada';
     return new Date(dateString).toLocaleDateString();
@@ -45,7 +39,6 @@ export function RabbitCard({ rabbit, onEdit, onDelete, onView }: RabbitCardProps
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-2 mb-1">
             <h3 className="text-sm font-semibold text-gray-900 truncate">{rabbit.name}</h3>
-            <span className="text-lg flex-shrink-0">{getGenderIcon(rabbit.gender)}</span>
           </div>
           
           <div className="flex flex-wrap gap-1 mb-1">
@@ -81,8 +74,8 @@ export function RabbitCard({ rabbit, onEdit, onDelete, onView }: RabbitCardProps
             )}
           </div>
           
-          <div className="text-xs text-gray-400 mt-2">
-            <p>Creado: {new Date(rabbit.created_at).toLocaleDateString()}</p>
+          <div className="text-xs text-gray-600 mt-2">
+            <p>Edad: {age} </p>
           </div>
         </div>
         

@@ -59,9 +59,9 @@ export function PerfilPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  ID de Usuario
+                  Rol de Usuario
                 </label>
-                <p className="text-gray-900 font-mono text-sm">{user.sub}</p>
+                <p className="text-gray-900 font-mono text-sm">{user.rol}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
