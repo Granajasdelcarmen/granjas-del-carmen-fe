@@ -76,3 +76,17 @@ export const useRefetchUsers = () => {
     queryClient.invalidateQueries({ queryKey: userKeys.lists() });
   };
 };
+
+// Hook para actualizar el rol de un usuario
+export const useUpdateUserRole = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ id, role }: { id: string; role: string }) => 
+      userService.updateUserRole(id, role),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: userKeys.detail(id) });
+    },
+  });
+};

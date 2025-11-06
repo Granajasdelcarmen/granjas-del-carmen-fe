@@ -6,11 +6,17 @@ class RabbitService {
   /**
    * Get all rabbits
    */
-  async getRabbits(sortBy?: 'asc' | 'desc'): Promise<Rabbit[]> {
+  async getRabbits(sortBy?: 'asc' | 'desc', discarded?: boolean | null): Promise<Rabbit[]> {
     try {
-      const url = sortBy
-        ? `${API_ENDPOINTS.RABBITS}?sort=${encodeURIComponent(sortBy)}`
-        : API_ENDPOINTS.RABBITS;
+      const params = new URLSearchParams();
+      if (sortBy) {
+        params.append('sort', sortBy);
+      }
+      if (discarded !== undefined && discarded !== null) {
+        params.append('discarded', discarded.toString());
+      }
+      const queryString = params.toString();
+      const url = queryString ? `${API_ENDPOINTS.RABBITS}?${queryString}` : API_ENDPOINTS.RABBITS;
       const rabbits = await apiService.getBackendResponse<Rabbit[]>(url);
       return rabbits;
     } catch (error) {
@@ -35,10 +41,22 @@ class RabbitService {
   /**
    * Get rabbits by gender
    */
-  async getRabbitsByGender(gender: 'MALE' | 'FEMALE', sortBy?: 'asc' | 'desc'): Promise<Rabbit[]> {
+  async getRabbitsByGender(
+    gender: 'MALE' | 'FEMALE', 
+    sortBy?: 'asc' | 'desc',
+    discarded?: boolean | null
+  ): Promise<Rabbit[]> {
     try {
+      const params = new URLSearchParams();
+      if (sortBy) {
+        params.append('sort', sortBy);
+      }
+      if (discarded !== undefined && discarded !== null) {
+        params.append('discarded', discarded.toString());
+      }
       const base = API_ENDPOINTS.RABBITS_BY_GENDER(gender);
-      const url = sortBy ? `${base}?sort=${encodeURIComponent(sortBy)}` : base;
+      const queryString = params.toString();
+      const url = queryString ? `${base}?${queryString}` : base;
       const rabbits = await apiService.getBackendResponse<Rabbit[]>(url);
       return rabbits;
     } catch (error) {
@@ -81,6 +99,31 @@ class RabbitService {
       await apiService.deleteBackendResponse<void>(API_ENDPOINTS.RABBIT_BY_ID(id));
     } catch (error) {
       console.error('Error deleting rabbit:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Discard a rabbit (mark as discarded without sale)
+   */
+  async discardRabbit(id: string, reason: string): Promise<void> {
+    try {
+      await apiService.postBackendResponse<void>(API_ENDPOINTS.RABBIT_DISCARD(id), { reason });
+    } catch (error) {
+      console.error('Error discarding rabbit:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Sell a rabbit - creates sale record and marks as discarded
+   */
+  async sellRabbit(id: string, saleData: { price: number; weight?: number; height?: number; notes?: string; sold_by: string; reason?: string }): Promise<{ id: string; animal_id: string; price: number; weight?: number; height?: number; notes?: string; sold_by: string }> {
+    try {
+      const sale = await apiService.postBackendResponse<{ id: string; animal_id: string; price: number; weight?: number; height?: number; notes?: string; sold_by: string }>(API_ENDPOINTS.RABBIT_SELL(id), saleData);
+      return sale;
+    } catch (error) {
+      console.error('Error selling rabbit:', error);
       throw error;
     }
   }

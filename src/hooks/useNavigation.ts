@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-export type Page = 'inicio' | 'administracion' | 'perfil';
+export type Page = 'inicio' | 'administracion' | 'perfil' | 'usuarios' | 'finanzas';
 
 export function useNavigation() {
   const [currentPage, setCurrentPage] = useState<Page>('inicio');

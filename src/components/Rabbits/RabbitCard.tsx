@@ -1,6 +1,6 @@
 import React from 'react';
 import { Rabbit } from 'src/types/api';
-import { differenceInDays } from 'date-fns'
+import { useAnimalAge } from 'src/hooks/useAnimalAge';
 
 interface RabbitCardProps {
   rabbit: Rabbit;
@@ -21,10 +21,8 @@ export function RabbitCard({ rabbit, onEdit, onDelete, onView }: RabbitCardProps
     }
   };
 
-const age = rabbit?.birth_date 
-  ? `${differenceInDays(new Date(), new Date(rabbit.birth_date))} días`
-  : "No disponible";
- 
+  const age = useAnimalAge(rabbit?.birth_date, 'RABBIT');
+
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'No especificada';
     return new Date(dateString).toLocaleDateString();

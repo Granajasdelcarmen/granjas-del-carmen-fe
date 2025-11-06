@@ -5,9 +5,10 @@ interface UserCardProps {
   user: User;
   onEdit?: (user: User) => void;
   onDelete?: (userId: string) => void;
+  onChangeRole?: (user: User) => void;
 }
 
-export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
+export function UserCard({ user, onEdit, onDelete, onChangeRole }: UserCardProps) {
   const getRoleColor = (role: string) => {
     switch (role) {
       case 'admin':
@@ -16,6 +17,8 @@ export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
         return 'bg-blue-100 text-blue-800';
       case 'viewer':
         return 'bg-gray-100 text-gray-800';
+      case 'trabajador':
+        return 'bg-green-100 text-green-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -59,11 +62,20 @@ export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
           </div>
         </div>
         
-        <div className="flex space-x-1 ml-2 flex-shrink-0">
+        <div className="flex flex-col gap-1 ml-2 flex-shrink-0">
+          {onChangeRole && (
+            <button
+              onClick={() => onChangeRole(user)}
+              className="p-1.5 text-purple-600 hover:bg-purple-50 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+              title="Cambiar rol"
+            >
+              👤
+            </button>
+          )}
           {onEdit && (
             <button
               onClick={() => onEdit(user)}
-              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+              className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
               title="Editar usuario"
             >
               ✏️
@@ -72,7 +84,7 @@ export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
           {onDelete && (
             <button
               onClick={() => onDelete(user.id)}
-              className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+              className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
               title="Eliminar usuario"
             >
               🗑️

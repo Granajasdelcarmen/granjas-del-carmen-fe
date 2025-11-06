@@ -9,7 +9,6 @@ class InventoryService {
   async getInventory(): Promise<Inventory[]> {
     try {
       const inventory = await apiService.getBackendResponse<Inventory[]>(API_ENDPOINTS.INVENTORY);
-      console.log('InventoryService - getInventory response:', inventory);
       return inventory;
     } catch (error) {
       console.error('Error fetching inventory:', error);

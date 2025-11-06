@@ -18,6 +18,18 @@ class ApiService {
     // Interceptor para requests
     this.api.interceptors.request.use(
       (config) => {
+        // Add user ID header if available (from auth)
+        const authUser = localStorage.getItem('auth_user');
+        if (authUser) {
+          try {
+            const user = JSON.parse(authUser);
+            if (user?.sub) {
+              config.headers['X-User-ID'] = user.sub;
+            }
+          } catch (e) {
+            // Ignore parse errors
+          }
+        }
         return config;
       },
       (error) => {
@@ -36,7 +48,18 @@ class ApiService {
           // Limpiar datos de autenticación y redirigir
           localStorage.removeItem('auth_token');
           localStorage.removeItem('auth_user');
-          window.location.href = '/login';
+          // Evitar redirección infinita si ya estamos en login
+          if (window.location.pathname !== '/login') {
+            window.location.href = '/login';
+          }
+        } else if (error.response?.status === 403) {
+          // Acceso denegado - mostrar mensaje y redirigir
+          const errorMessage = error.response?.data?.error || 'No tienes permisos para realizar esta acción';
+          alert(errorMessage);
+          // Redirigir a página principal si no es admin
+          if (window.location.pathname.startsWith('/admin')) {
+            window.location.href = '/';
+          }
         }
         return Promise.reject(error);
       }
@@ -72,8 +95,26 @@ class ApiService {
 
   // Métodos específicos para respuestas del backend Flask
   async getBackendResponse<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.api.get<ApiResponse<T>>(url, config);
-    return response.data.data;
+    try {
+      const response = await this.api.get<ApiResponse<T> | ApiError>(url, config);
+      // Verificar si la respuesta tiene la estructura esperada
+      if (response.data && 'data' in response.data) {
+        return (response.data as ApiResponse<T>).data;
+      }
+      // Si no tiene 'data', puede ser que la respuesta sea directamente los datos
+      // o que sea un error envuelto
+      if ('error' in response.data) {
+        throw new Error((response.data as ApiError).error || 'Error del servidor');
+      }
+      // Si no tiene estructura conocida, devolver la respuesta completa
+      return response.data as unknown as T;
+    } catch (error: any) {
+      // Si es un error de Axios, extraer el mensaje del error
+      if (error.response?.data?.error) {
+        throw new Error(error.response.data.error);
+      }
+      throw error;
+    }
   }
 
   async postBackendResponse<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {

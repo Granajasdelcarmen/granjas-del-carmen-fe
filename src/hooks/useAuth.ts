@@ -44,6 +44,16 @@ export function useAuth() {
     return success;
   };
 
+  // Role helpers
+  const isAdmin = !!(user && (user as any).role === 'admin');
+  const isUser = !!(user && (user as any).role === 'user');
+  const isViewer = !!(user && (user as any).role === 'viewer');
+  const isTrabajador = !!(user && (user as any).role === 'trabajador');
+  const canAccessAdmin = isAdmin; // Only admins can access admin panel
+  const canEdit = isAdmin || isUser || isTrabajador; // Admins, users, and trabajadores can edit/create animals
+  const canView = isAdmin || isUser || isViewer || isTrabajador; // All roles can view
+  const canSellOrDiscard = isAdmin; // Only admins can sell or discard animals
+
   return {
     user,
     isAuthenticated: !!(user && (user as any).sub),
@@ -56,5 +66,14 @@ export function useAuth() {
     handleAuthCallback,
     isLoggingIn: loginMutation.isPending,
     isLoggingOut: logoutMutation.isPending,
+    // Role helpers
+    isAdmin,
+    isUser,
+    isViewer,
+    isTrabajador,
+    canAccessAdmin,
+    canEdit,
+    canView,
+    canSellOrDiscard,
   };
 }

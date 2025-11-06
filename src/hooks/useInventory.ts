@@ -38,7 +38,6 @@ export const useCreateInventoryItem = () => {
     mutationFn: (itemData: InventoryCreate) => inventoryService.createInventoryItem(itemData),
     onSuccess: (newItem) => {
       queryClient.invalidateQueries({ queryKey: inventoryKeys.lists() });
-      console.log('Item del inventario creado:', newItem);
     },
     onError: (error) => {
       console.error('Error al crear item del inventario:', error);
@@ -56,7 +55,6 @@ export const useUpdateInventoryItem = () => {
     onSuccess: (updatedItem, { id }) => {
       queryClient.invalidateQueries({ queryKey: inventoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: inventoryKeys.detail(id) });
-      console.log('Item del inventario actualizado:', updatedItem);
     },
     onError: (error) => {
       console.error('Error al actualizar item del inventario:', error);
@@ -73,7 +71,6 @@ export const useDeleteInventoryItem = () => {
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: inventoryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: inventoryKeys.detail(id) });
-      console.log('Item del inventario eliminado');
     },
     onError: (error) => {
       console.error('Error al eliminar item del inventario:', error);

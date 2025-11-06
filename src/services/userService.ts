@@ -67,6 +67,19 @@ class UserService {
     }
   }
 
+  /**
+   * Update user role by ID
+   */
+  async updateUserRole(id: string, role: string): Promise<User> {
+    try {
+      const user = await apiService.putBackendResponse<User>(API_ENDPOINTS.USER_ROLE_UPDATE(id), { role });
+      return user;
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      throw error;
+    }
+  }
+
   // Dev seed removed: we now work only with real data
 
   /**

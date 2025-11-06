@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { AdminSidebar } from 'src/components/Admin/AdminSidebar';
 import { RabbitsSection } from 'src/components/Rabbits/RabbitsSection';
 import { InventorySection } from 'src/components/Inventory/InventorySection';
-import { CowsSection } from 'src/components/Animals/CowsSection';
-import { SheepSection } from 'src/components/Animals/SheepSection';
+import { CowsSection } from 'src/components/Cows/CowsSection';
+import { SheepSection } from 'src/components/Sheep/SheepSection';
 import { ChickensSection } from 'src/components/Animals/ChickensSection';
+import { RoleGate } from 'src/components/auth/RoleGate';
 
 export function AdministracionPage() {
   const [activeSection, setActiveSection] = useState('conejos');
@@ -27,17 +28,19 @@ export function AdministracionPage() {
   };
 
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      <AdminSidebar 
-        activeSection={activeSection} 
-        onSectionChange={setActiveSection} 
-      />
-      
-      {/* Main Content */}
-      <div className="flex-1 p-6">
-        {renderContent()}
+    <RoleGate allowedRoles={['admin']}>
+      <div className="flex relative">
+        {/* Sidebar */}
+        <AdminSidebar 
+          activeSection={activeSection} 
+          onSectionChange={setActiveSection} 
+        />
+        
+        {/* Main Content */}
+        <div className="flex-1 w-full md:ml-0 p-3 sm:p-4 md:p-6 min-w-0">
+          {renderContent()}
+        </div>
       </div>
-    </div>
+    </RoleGate>
   );
 }

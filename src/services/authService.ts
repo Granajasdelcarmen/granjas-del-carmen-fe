@@ -88,6 +88,7 @@ class AuthService {
    */
   setUser(user: AuthUser): void {
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    // X-User-ID header is automatically added by ApiService interceptor
   }
 
   /**

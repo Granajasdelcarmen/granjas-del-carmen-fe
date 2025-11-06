@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Rabbit } from 'src/types/api';
 import { Modal } from 'src/components/Common/Modal';
+import { RabbitDiscardModal } from './RabbitDiscardModal';
+import { RabbitSaleModal } from './RabbitSaleModal';
+import { useAuth } from 'src/hooks/useAuth';
+import { AgeDisplay } from 'src/components/Common/AgeDisplay';
 
 interface RabbitModalProps {
   rabbit: Rabbit | null;
@@ -8,9 +12,15 @@ interface RabbitModalProps {
   onClose: () => void;
   onEdit?: (rabbit: Rabbit) => void;
   onDelete?: (rabbitId: string) => void;
+  onDiscard?: () => void;
+  onSell?: () => void;
+  currentUserId?: string;
 }
 
-export function RabbitModal({ rabbit, isOpen, onClose, onEdit, onDelete }: RabbitModalProps) {
+export function RabbitModal({ rabbit, isOpen, onClose, onEdit, onDelete, onDiscard, onSell, currentUserId }: RabbitModalProps) {
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
+  const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
+  const { canSellOrDiscard } = useAuth();
   if (!rabbit) return null;
 
   const getGenderIcon = (gender?: string) => {
@@ -94,6 +104,9 @@ export function RabbitModal({ rabbit, isOpen, onClose, onEdit, onDelete }: Rabbi
               <h3 className="text-sm font-medium text-gray-500 mb-1">Fecha de Nacimiento</h3>
               <p className="text-gray-900">{formatDate(rabbit.birth_date)}</p>
             </div>
+            <div>
+              <AgeDisplay birthDate={rabbit.birth_date} animalType="RABBIT" />
+            </div>
             
             {rabbit.user_id && (
               <div>
@@ -136,9 +149,27 @@ export function RabbitModal({ rabbit, isOpen, onClose, onEdit, onDelete }: Rabbi
         </div>
 
         {/* Acciones */}
-        {(onEdit || onDelete) && (
+        {(onEdit || onDelete || !rabbit.discarded) && (
           <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-            {onEdit && (
+            {!rabbit.discarded && canSellOrDiscard && (
+              <>
+                <button
+                  onClick={() => setIsSaleModalOpen(true)}
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-2"
+                >
+                  <span>💰</span>
+                  <span>Vender</span>
+                </button>
+                <button
+                  onClick={() => setIsDiscardModalOpen(true)}
+                  className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2"
+                >
+                  <span>🗑️</span>
+                  <span>Descartar</span>
+                </button>
+              </>
+            )}
+            {onEdit && !rabbit.discarded && (
               <button
                 onClick={() => {
                   onEdit(rabbit);
@@ -163,6 +194,29 @@ export function RabbitModal({ rabbit, isOpen, onClose, onEdit, onDelete }: Rabbi
           </div>
         )}
       </div>
+
+      {/* Modal de venta */}
+      <RabbitSaleModal
+        rabbit={rabbit}
+        isOpen={isSaleModalOpen}
+        onClose={() => setIsSaleModalOpen(false)}
+        onSuccess={() => {
+          onSell?.();
+          onClose();
+        }}
+        currentUserId={currentUserId}
+      />
+
+      {/* Modal de descarte */}
+      <RabbitDiscardModal
+        rabbit={rabbit}
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onSuccess={() => {
+          onDiscard?.();
+          onClose();
+        }}
+      />
     </Modal>
   );
 }
