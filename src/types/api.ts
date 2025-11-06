@@ -179,6 +179,31 @@ export interface AnimalSaleCreate {
   reason?: string;
 }
 
+// Total Sale Type (consolidated product + animal sales)
+export interface TotalSale {
+  id: string;
+  sale_type: 'product' | 'animal';
+  // Product sale fields
+  product_type?: ProductType;
+  quantity?: number;
+  unit_price?: number;
+  customer_name?: string;
+  // Animal sale fields
+  animal_id?: string;
+  animal_type?: AnimalType;
+  animal_name?: string;
+  price?: number;
+  weight?: number;
+  height?: number;
+  // Common fields
+  total_price: number;
+  sale_date: string;
+  notes?: string;
+  sold_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Auth Types
 export interface AuthUser {
   sub: string;

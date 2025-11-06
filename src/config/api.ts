@@ -52,6 +52,7 @@ export const API_ENDPOINTS = {
   // Finance endpoints
   PRODUCT_SALES: '/finance/product-sales',
   PRODUCT_SALE_BY_ID: (id: string) => `/finance/product-sales/${id}`,
+  TOTAL_SALES: '/finance/total-sales',
   EXPENSES: '/finance/expenses',
   EXPENSE_BY_ID: (id: string) => `/finance/expenses/${id}`,
 };
