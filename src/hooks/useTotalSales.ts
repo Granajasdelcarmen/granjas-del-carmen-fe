@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { totalSalesService } from 'src/services/totalSalesService';
-import { TotalSale } from 'src/types/api';
 
 // Query keys
 export const totalSalesKeys = {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { TotalSale, ProductType, AnimalType } from 'src/types/api';
+import { ANIMAL_SPECIES, ANIMAL_SPECIES_LABELS } from 'src/constants/animals';
 
 interface TotalSalesTableProps {
   sales: TotalSale[];
@@ -25,9 +26,9 @@ export function TotalSalesTable({ sales, isLoading, sortBy, onSortChange }: Tota
   const getAnimalTypeLabel = (type?: AnimalType) => {
     if (!type) return '-';
     switch (type) {
-      case 'RABBIT': return 'Conejo';
-      case 'COW': return 'Vaca';
-      case 'SHEEP': return 'Oveja';
+      case ANIMAL_SPECIES.RABBIT: return ANIMAL_SPECIES_LABELS[ANIMAL_SPECIES.RABBIT];
+      case ANIMAL_SPECIES.COW: return ANIMAL_SPECIES_LABELS[ANIMAL_SPECIES.COW];
+      case ANIMAL_SPECIES.SHEEP: return ANIMAL_SPECIES_LABELS[ANIMAL_SPECIES.SHEEP];
       case 'CHICKEN': return 'Pollo';
       default: return type;
     }

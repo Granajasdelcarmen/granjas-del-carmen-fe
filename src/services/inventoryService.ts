@@ -1,6 +1,7 @@
 import { apiService } from './api';
 import { API_ENDPOINTS } from 'src/config/api';
 import { Inventory, InventoryCreate, ApiResponse } from 'src/types/api';
+import { logger } from 'src/utils/logger';
 
 class InventoryService {
   /**
@@ -11,7 +12,7 @@ class InventoryService {
       const inventory = await apiService.getBackendResponse<Inventory[]>(API_ENDPOINTS.INVENTORY);
       return inventory;
     } catch (error) {
-      console.error('Error fetching inventory:', error);
+      logger.error('Error fetching inventory', error);
       throw error;
     }
   }
@@ -24,7 +25,7 @@ class InventoryService {
       const item = await apiService.getBackendResponse<Inventory>(API_ENDPOINTS.INVENTORY_BY_ID(id));
       return item;
     } catch (error) {
-      console.error('Error fetching inventory item:', error);
+      logger.error('Error fetching inventory item', error);
       throw error;
     }
   }
@@ -37,7 +38,7 @@ class InventoryService {
       const item = await apiService.postBackendResponse<Inventory>(API_ENDPOINTS.INVENTORY, itemData);
       return item;
     } catch (error) {
-      console.error('Error creating inventory item:', error);
+      logger.error('Error creating inventory item', error);
       throw error;
     }
   }
@@ -50,7 +51,7 @@ class InventoryService {
       const item = await apiService.putBackendResponse<Inventory>(API_ENDPOINTS.INVENTORY_BY_ID(id), itemData);
       return item;
     } catch (error) {
-      console.error('Error updating inventory item:', error);
+      logger.error('Error updating inventory item', error);
       throw error;
     }
   }
@@ -63,7 +64,7 @@ class InventoryService {
       const item = await apiService.putBackendResponse<Inventory>(`${API_ENDPOINTS.INVENTORY_BY_ID(id)}/quantity`, { quantity });
       return item;
     } catch (error) {
-      console.error('Error updating item quantity:', error);
+      logger.error('Error updating item quantity', error);
       throw error;
     }
   }
@@ -76,7 +77,7 @@ class InventoryService {
       const item = await apiService.postBackendResponse<Inventory>(`${API_ENDPOINTS.INVENTORY_BY_ID(id)}/add`, { amount });
       return item;
     } catch (error) {
-      console.error('Error adding item quantity:', error);
+      logger.error('Error adding item quantity', error);
       throw error;
     }
   }
@@ -89,7 +90,7 @@ class InventoryService {
       const item = await apiService.postBackendResponse<Inventory>(`${API_ENDPOINTS.INVENTORY_BY_ID(id)}/subtract`, { amount });
       return item;
     } catch (error) {
-      console.error('Error subtracting item quantity:', error);
+      logger.error('Error subtracting item quantity', error);
       throw error;
     }
   }
@@ -101,7 +102,7 @@ class InventoryService {
     try {
       await apiService.deleteBackendResponse<void>(API_ENDPOINTS.INVENTORY_BY_ID(id));
     } catch (error) {
-      console.error('Error deleting inventory item:', error);
+      logger.error('Error deleting inventory item', error);
       throw error;
     }
   }
@@ -114,7 +115,7 @@ class InventoryService {
       const response = await apiService.getFullResponse<Inventory[]>(API_ENDPOINTS.INVENTORY);
       return response;
     } catch (error) {
-      console.error('Error fetching inventory with message:', error);
+      logger.error('Error fetching inventory with message', error);
       throw error;
     }
   }

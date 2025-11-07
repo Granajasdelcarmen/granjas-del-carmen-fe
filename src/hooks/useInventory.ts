@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { inventoryService } from 'src/services/inventoryService';
-import { Inventory, InventoryCreate } from 'src/types/api';
+import { InventoryCreate } from 'src/types/api';
+import { logger } from 'src/utils/logger';
 
 // Query keys
 export const inventoryKeys = {
@@ -40,7 +41,7 @@ export const useCreateInventoryItem = () => {
       queryClient.invalidateQueries({ queryKey: inventoryKeys.lists() });
     },
     onError: (error) => {
-      console.error('Error al crear item del inventario:', error);
+      logger.error('Error al crear item del inventario', error);
     },
   });
 };
@@ -57,7 +58,7 @@ export const useUpdateInventoryItem = () => {
       queryClient.invalidateQueries({ queryKey: inventoryKeys.detail(id) });
     },
     onError: (error) => {
-      console.error('Error al actualizar item del inventario:', error);
+      logger.error('Error al actualizar item del inventario', error);
     },
   });
 };
@@ -73,7 +74,7 @@ export const useDeleteInventoryItem = () => {
       queryClient.invalidateQueries({ queryKey: inventoryKeys.detail(id) });
     },
     onError: (error) => {
-      console.error('Error al eliminar item del inventario:', error);
+      logger.error('Error al eliminar item del inventario', error);
     },
   });
 };

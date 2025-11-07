@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Modal } from 'src/components/Common/Modal';
-import { useSellSheep } from 'src/hooks/useSheep';
+import { useSellAnimal } from 'src/hooks/useAnimals';
 import { Sheep } from 'src/types/api';
+import { ANIMAL_SPECIES } from 'src/constants/animals';
+
+const SPECIES = ANIMAL_SPECIES.SHEEP;
 
 interface SheepSaleModalProps {
   sheep: Sheep | null;
@@ -23,7 +26,7 @@ export function SheepSaleModal({
   const [height, setHeight] = useState('');
   const [notes, setNotes] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const sellMutation = useSellSheep();
+  const sellMutation = useSellAnimal(SPECIES);
 
   if (!sheep) return null;
 

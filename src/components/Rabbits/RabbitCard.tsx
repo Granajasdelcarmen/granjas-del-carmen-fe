@@ -1,6 +1,7 @@
 import React from 'react';
 import { Rabbit } from 'src/types/api';
 import { useAnimalAge } from 'src/hooks/useAnimalAge';
+import { ANIMAL_SPECIES } from 'src/constants/animals';
 
 interface RabbitCardProps {
   rabbit: Rabbit;
@@ -21,7 +22,7 @@ export function RabbitCard({ rabbit, onEdit, onDelete, onView }: RabbitCardProps
     }
   };
 
-  const age = useAnimalAge(rabbit?.birth_date, 'RABBIT');
+  const age = useAnimalAge(rabbit?.birth_date, ANIMAL_SPECIES.RABBIT);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'No especificada';

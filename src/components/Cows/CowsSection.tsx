@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { useCows, useCowsByGender, useRefetchCows } from 'src/hooks/useCows';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useAnimals, useAnimalsByGender, useRefetchAnimals } from 'src/hooks/useAnimals';
 import { CowsList } from './CowsList';
 import { CowCreateModal } from './CowCreateModal';
 import { AnimalSectionHeader } from 'src/components/Common/AnimalSectionHeader';
+import { ANIMAL_SPECIES } from 'src/constants/animals';
+
+const SPECIES = ANIMAL_SPECIES.COW;
 
 export function CowsSection() {
   const [genderFilter, setGenderFilter] = useState<'ALL' | 'MALE' | 'FEMALE'>('ALL');
@@ -12,35 +15,37 @@ export function CowsSection() {
   const sortByValue = sortOrder === "none" ? undefined : sortOrder;
   const discardedValue = discardedFilter === "active" ? false : discardedFilter === "discarded" ? true : null;
   
-  const { data: allCows, isLoading: isLoadingAll, error: errorAll, isError: isErrorAll } = useCows(
-    sortByValue, discardedValue
+  const { data: allCows, isLoading: isLoadingAll, error: errorAll, isError: isErrorAll } = useAnimals(
+    SPECIES, sortByValue, discardedValue
   );
-  const { data: maleCows, isLoading: isLoadingMale } = useCowsByGender('MALE', genderFilter === 'MALE', sortByValue, discardedValue);
-  const { data: femaleCows, isLoading: isLoadingFemale } = useCowsByGender('FEMALE', genderFilter === 'FEMALE', sortByValue, discardedValue);
+  // Only fetch gender-specific data when that filter is active
+  const { data: maleCows, isLoading: isLoadingMale } = useAnimalsByGender(SPECIES, 'MALE', genderFilter === 'MALE', sortByValue, discardedValue);
+  const { data: femaleCows, isLoading: isLoadingFemale } = useAnimalsByGender(SPECIES, 'FEMALE', genderFilter === 'FEMALE', sortByValue, discardedValue);
   
-  const refetchCows = useRefetchCows();
+  const refetchCows = useRefetchAnimals(SPECIES);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  const getCurrentData = () => {
+  // Memoize current data calculation
+  const { data: cows, isLoading } = useMemo(() => {
     switch (genderFilter) {
       case 'MALE':
-        return { data: maleCows, isLoading: isLoadingMale };
+        return { data: maleCows || [], isLoading: isLoadingMale };
       case 'FEMALE':
-        return { data: femaleCows, isLoading: isLoadingFemale };
+        return { data: femaleCows || [], isLoading: isLoadingFemale };
       default:
-        return { data: allCows, isLoading: isLoadingAll };
+        return { data: allCows || [], isLoading: isLoadingAll };
     }
-  };
+  }, [genderFilter, allCows, maleCows, femaleCows, isLoadingAll, isLoadingMale, isLoadingFemale]);
 
-  const { data: cows, isLoading } = getCurrentData();
   const error = errorAll;
   const isError = isErrorAll;
 
-  const handleRefetch = () => {
+  const handleRefetch = useCallback(() => {
     refetchCows();
-  };
+  }, [refetchCows]);
 
-  const getFilterCount = () => {
+  // Memoize filter count calculation
+  const filterCount = useMemo(() => {
     switch (genderFilter) {
       case 'MALE':
         return Array.isArray(maleCows) ? maleCows.length : 0;
@@ -49,14 +54,14 @@ export function CowsSection() {
       default:
         return Array.isArray(allCows) ? allCows.length : 0;
     }
-  };
+  }, [genderFilter, allCows, maleCows, femaleCows]);
 
   return (
     <div className="bg-white rounded-lg shadow-sm border">
       <AnimalSectionHeader
         animalType="cow"
         animalTypeLabel="Vacas"
-        count={getFilterCount()}
+        count={filterCount}
         genderFilter={genderFilter}
         discardedFilter={discardedFilter}
         sortOrder={sortOrder}
@@ -84,7 +89,7 @@ export function CowsSection() {
           </div>
         ) : (
           <>
-            <CowsList cows={cows || []} isLoading={isLoading} />
+            <CowsList cows={cows} isLoading={isLoading} />
             <CowCreateModal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
           </>
         )}

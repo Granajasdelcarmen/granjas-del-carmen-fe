@@ -1,6 +1,7 @@
 import { apiService } from './api';
 import { API_ENDPOINTS } from '../config/api';
 import { TotalSale } from '../types/api';
+import { logger } from '../utils/logger';
 
 class TotalSalesService {
   /**
@@ -17,7 +18,7 @@ class TotalSalesService {
       const sales = await apiService.getBackendResponse<TotalSale[]>(url);
       return sales;
     } catch (error: any) {
-      console.error('Error fetching total sales:', error);
+      logger.error('Error fetching total sales', error);
       throw error;
     }
   }

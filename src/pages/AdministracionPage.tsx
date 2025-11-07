@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AdminSidebar } from 'src/components/Admin/AdminSidebar';
 import { RabbitsSection } from 'src/components/Rabbits/RabbitsSection';
 import { InventorySection } from 'src/components/Inventory/InventorySection';
+import { InventoryProductsSection } from 'src/components/InventoryProducts/InventoryProductsSection';
 import { CowsSection } from 'src/components/Cows/CowsSection';
 import { SheepSection } from 'src/components/Sheep/SheepSection';
 import { ChickensSection } from 'src/components/Animals/ChickensSection';
@@ -21,7 +22,7 @@ export function AdministracionPage() {
       case 'gallinas':
         return <ChickensSection />;
       case 'inventario':
-        return <InventorySection />;
+        return <InventoryProductsSection />;
       default:
         return <RabbitsSection />;
     }

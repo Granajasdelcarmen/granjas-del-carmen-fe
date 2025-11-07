@@ -11,7 +11,7 @@ interface RabbitsListProps {
   onDeleteRabbit?: (rabbitId: string) => void;
 }
 
-export function RabbitsList({ rabbits, isLoading, onEditRabbit, onDeleteRabbit }: RabbitsListProps) {
+export const RabbitsList = React.memo(function RabbitsList({ rabbits, isLoading, onEditRabbit, onDeleteRabbit }: RabbitsListProps) {
   const [selectedRabbit, setSelectedRabbit] = useState<Rabbit | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
@@ -54,7 +54,6 @@ export function RabbitsList({ rabbits, isLoading, onEditRabbit, onDeleteRabbit }
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nacimiento</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Edad</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -74,9 +73,6 @@ export function RabbitsList({ rabbits, isLoading, onEditRabbit, onDeleteRabbit }
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="h-4 bg-gray-200 rounded w-1/3"></div>
                 </td>
               </tr>
             ))}
@@ -110,7 +106,6 @@ export function RabbitsList({ rabbits, isLoading, onEditRabbit, onDeleteRabbit }
                   <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nacimiento</th>
                   <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Edad</th>
                   <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                  <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -142,41 +137,43 @@ export function RabbitsList({ rabbits, isLoading, onEditRabbit, onDeleteRabbit }
                       <AgeDisplay birthDate={rabbit.birth_date} animalType="RABBIT" />
                     </td>
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                      {rabbit.discarded ? (
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                          Descartado
-                        </span>
-                      ) : (
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          Activo
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex space-x-2">
-                        {onEditRabbit && !rabbit.discarded && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onEditRabbit(rabbit);
-                            }}
-                            className="text-blue-600 hover:text-blue-900 min-w-[44px] min-h-[44px] flex items-center justify-center"
-                            title="Editar"
-                          >
-                            ✏️
-                          </button>
-                        )}
-                        {onDeleteRabbit && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onDeleteRabbit(rabbit.id);
-                            }}
-                            className="text-red-600 hover:text-red-900 min-w-[44px] min-h-[44px] flex items-center justify-center"
-                            title="Eliminar"
-                          >
-                            🗑️
-                          </button>
+                      <div className="flex flex-col gap-1">
+                        {rabbit.slaughtered ? (
+                          <>
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                              🥩 Sacrificado
+                            </span>
+                            {rabbit.in_freezer && (
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                ❄️ En Congelador
+                              </span>
+                            )}
+                            {rabbit.slaughtered_date && (
+                              <span className="text-xs text-gray-500">
+                                {formatDate(rabbit.slaughtered_date)}
+                              </span>
+                            )}
+                          </>
+                        ) : rabbit.discarded ? (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            Descartado
+                          </span>
+                        ) : (
+                          <>
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                              Activo
+                            </span>
+                            {rabbit.is_breeder && (
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                ⭐ Reproductor
+                              </span>
+                            )}
+                            {!rabbit.is_breeder && (
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-600">
+                                Venta
+                              </span>
+                            )}
+                          </>
                         )}
                       </div>
                     </td>
@@ -214,44 +211,40 @@ export function RabbitsList({ rabbits, isLoading, onEditRabbit, onDeleteRabbit }
                     <span>•</span>
                     <AgeDisplay birthDate={rabbit.birth_date} animalType="RABBIT" className="text-xs" />
                   </div>
-                  <div className="mt-2">
-                    {rabbit.discarded ? (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {rabbit.slaughtered ? (
+                      <>
+                        <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
+                          🥩 Sacrificado
+                        </span>
+                        {rabbit.in_freezer && (
+                          <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ❄️ En Congelador
+                          </span>
+                        )}
+                      </>
+                    ) : rabbit.discarded ? (
                       <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-red-100 text-red-800">
                         Descartado
                       </span>
                     ) : (
-                      <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                        Activo
-                      </span>
+                      <>
+                        <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                          Activo
+                        </span>
+                        {rabbit.is_breeder ? (
+                          <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            ⭐ Reproductor
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
+                            Venta
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col gap-2 ml-2" onClick={(e) => e.stopPropagation()}>
-                {onEditRabbit && !rabbit.discarded && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEditRabbit(rabbit);
-                    }}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                    title="Editar"
-                  >
-                    ✏️
-                  </button>
-                )}
-                {onDeleteRabbit && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteRabbit(rabbit.id);
-                    }}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                    title="Eliminar"
-                  >
-                    🗑️
-                  </button>
-                )}
               </div>
             </div>
           </div>
@@ -275,4 +268,4 @@ export function RabbitsList({ rabbits, isLoading, onEditRabbit, onDeleteRabbit }
       />
     </>
   );
-}
+});

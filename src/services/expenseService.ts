@@ -1,6 +1,7 @@
 import { apiService } from './api';
 import { API_ENDPOINTS } from '../config/api';
 import { Expense, ExpenseCreate, ApiResponse } from '../types/api';
+import { logger } from '../utils/logger';
 
 class ExpenseService {
   /**
@@ -17,10 +18,11 @@ class ExpenseService {
       const expenses = await apiService.getBackendResponse<Expense[]>(url);
       return expenses;
     } catch (error: any) {
-      console.error('Error fetching expenses:', error);
-      console.error('Error response:', error?.response);
-      console.error('Error status:', error?.response?.status);
-      console.error('Error data:', error?.response?.data);
+      logger.error('Error fetching expenses', error, {
+        response: error?.response,
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
       throw error;
     }
   }
@@ -33,7 +35,7 @@ class ExpenseService {
       const expense = await apiService.getBackendResponse<Expense>(API_ENDPOINTS.EXPENSE_BY_ID(id));
       return expense;
     } catch (error) {
-      console.error('Error fetching expense:', error);
+      logger.error('Error fetching expense', error);
       throw error;
     }
   }
@@ -46,7 +48,7 @@ class ExpenseService {
       const expense = await apiService.postBackendResponse<Expense>(API_ENDPOINTS.EXPENSES, expenseData);
       return expense;
     } catch (error) {
-      console.error('Error creating expense:', error);
+      logger.error('Error creating expense', error);
       throw error;
     }
   }
@@ -59,7 +61,7 @@ class ExpenseService {
       const expense = await apiService.putBackendResponse<Expense>(API_ENDPOINTS.EXPENSE_BY_ID(id), expenseData);
       return expense;
     } catch (error) {
-      console.error('Error updating expense:', error);
+      logger.error('Error updating expense', error);
       throw error;
     }
   }
@@ -71,7 +73,7 @@ class ExpenseService {
     try {
       await apiService.delete(API_ENDPOINTS.EXPENSE_BY_ID(id));
     } catch (error) {
-      console.error('Error deleting expense:', error);
+      logger.error('Error deleting expense', error);
       throw error;
     }
   }

@@ -1,6 +1,7 @@
 import { apiService } from './api';
 import { API_ENDPOINTS, API_CONFIG } from 'src/config/api';
 import { AuthUser, LoginUrlResponse, LogoutUrlResponse } from 'src/types/api';
+import { logger } from 'src/utils/logger';
 
 class AuthService {
   private readonly USER_KEY = 'auth_user';
@@ -107,7 +108,7 @@ class AuthService {
       const user = await this.getCurrentUser();
       return !!user;
     } catch (error) {
-      console.error('Error en callback de Auth0:', error);
+      logger.error('Error en callback de Auth0', error);
       return false;
     }
   }

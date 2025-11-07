@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { differenceInDays, differenceInMonths, differenceInYears } from 'date-fns';
 import { AnimalType } from 'src/types/api';
+import { ANIMAL_SPECIES } from 'src/constants/animals';
 
 /**
  * Hook para calcular la edad de un animal de forma inteligente
@@ -31,7 +32,7 @@ export function useAnimalAge(birthDate?: string | null, animalType?: AnimalType)
     }
 
     // Para conejos: siempre en días
-    if (animalType === 'RABBIT') {
+    if (animalType === ANIMAL_SPECIES.RABBIT) {
       const days = differenceInDays(now, birth);
       return `${days} ${days === 1 ? 'día' : 'días'}`;
     }

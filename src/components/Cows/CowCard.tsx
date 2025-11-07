@@ -1,6 +1,7 @@
 import React from 'react';
 import { Cow } from 'src/types/api';
 import { useAnimalAge } from 'src/hooks/useAnimalAge';
+import { ANIMAL_SPECIES } from 'src/constants/animals';
 
 interface CowCardProps {
   cow: Cow;
@@ -37,7 +38,7 @@ export function CowCard({ cow, onEdit, onDelete, onView }: CowCardProps) {
     return new Date(dateString).toLocaleDateString();
   };
 
-  const age = useAnimalAge(cow?.birth_date, 'COW');
+  const age = useAnimalAge(cow?.birth_date, ANIMAL_SPECIES.COW);
 
   return (
     <div 

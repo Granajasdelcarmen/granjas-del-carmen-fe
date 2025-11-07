@@ -1,6 +1,7 @@
 import { apiService } from './api';
 import { API_ENDPOINTS } from '../config/api';
 import { ProductSale, ProductSaleCreate, ApiResponse } from '../types/api';
+import { logger } from '../utils/logger';
 
 class ProductSaleService {
   /**
@@ -17,7 +18,7 @@ class ProductSaleService {
       const sales = await apiService.getBackendResponse<ProductSale[]>(url);
       return sales;
     } catch (error) {
-      console.error('Error fetching product sales:', error);
+      logger.error('Error fetching product sales', error);
       throw error;
     }
   }
@@ -30,7 +31,7 @@ class ProductSaleService {
       const sale = await apiService.getBackendResponse<ProductSale>(API_ENDPOINTS.PRODUCT_SALE_BY_ID(id));
       return sale;
     } catch (error) {
-      console.error('Error fetching product sale:', error);
+      logger.error('Error fetching product sale', error);
       throw error;
     }
   }
@@ -43,7 +44,7 @@ class ProductSaleService {
       const sale = await apiService.postBackendResponse<ProductSale>(API_ENDPOINTS.PRODUCT_SALES, saleData);
       return sale;
     } catch (error) {
-      console.error('Error creating product sale:', error);
+      logger.error('Error creating product sale', error);
       throw error;
     }
   }
@@ -56,7 +57,7 @@ class ProductSaleService {
       const sale = await apiService.putBackendResponse<ProductSale>(API_ENDPOINTS.PRODUCT_SALE_BY_ID(id), saleData);
       return sale;
     } catch (error) {
-      console.error('Error updating product sale:', error);
+      logger.error('Error updating product sale', error);
       throw error;
     }
   }
@@ -68,7 +69,7 @@ class ProductSaleService {
     try {
       await apiService.delete(API_ENDPOINTS.PRODUCT_SALE_BY_ID(id));
     } catch (error) {
-      console.error('Error deleting product sale:', error);
+      logger.error('Error deleting product sale', error);
       throw error;
     }
   }

@@ -101,12 +101,66 @@ export function SheepModal({ sheep, isOpen, onClose, onEdit, onDelete, onDiscard
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <div>
+              <h3 className="text-sm font-medium text-gray-500 mb-1">Origen</h3>
+              <p className="text-gray-900">
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  sheep.origin === 'BORN' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+                }`}>
+                  {sheep.origin === 'BORN' ? 'Nacido en la granja' : 'Comprado'}
+                </span>
+              </p>
+            </div>
+            
+            <div>
               <h3 className="text-sm font-medium text-gray-500 mb-1">Fecha de Nacimiento</h3>
               <p className="text-gray-900">{formatDate(sheep.birth_date)}</p>
             </div>
             <div>
               <AgeDisplay birthDate={sheep.birth_date} animalType="SHEEP" />
             </div>
+            
+            {/* Información de compra */}
+            {sheep.origin === 'PURCHASED' && (
+              <>
+                {sheep.purchase_date && (
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Fecha de Compra</h3>
+                    <p className="text-gray-900">{formatDate(sheep.purchase_date)}</p>
+                  </div>
+                )}
+                {sheep.purchase_price && (
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Precio de Compra</h3>
+                    <p className="text-gray-900">${sheep.purchase_price.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  </div>
+                )}
+                {sheep.purchase_vendor && (
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Vendedor/Proveedor</h3>
+                    <p className="text-gray-900">{sheep.purchase_vendor}</p>
+                  </div>
+                )}
+              </>
+            )}
+            
+            {/* Información de padres */}
+            {sheep.origin === 'BORN' && (sheep.mother || sheep.father) && (
+              <div>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">Padres</h3>
+                <div className="space-y-1">
+                  {sheep.mother && (
+                    <p className="text-gray-900 text-sm">
+                      <span className="font-medium">Madre:</span> {sheep.mother.name}
+                    </p>
+                  )}
+                  {sheep.father && (
+                    <p className="text-gray-900 text-sm">
+                      <span className="font-medium">Padre:</span> {sheep.father.name}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
             
             {sheep.user_id && (
               <div>
@@ -124,6 +178,25 @@ export function SheepModal({ sheep, isOpen, onClose, onEdit, onDelete, onDiscard
           </div>
           
           <div className="space-y-4">
+            {/* Información de hijos */}
+            {sheep.children && sheep.children.length > 0 && (
+              <div>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">Hijos ({sheep.children.length})</h3>
+                <div className="space-y-1 max-h-48 overflow-y-auto">
+                  {sheep.children.map(child => (
+                    <div key={child.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{child.name}</p>
+                        <p className="text-xs text-gray-500">
+                          {child.gender} • {formatDate(child.birth_date)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
             <div>
               <h3 className="text-sm font-medium text-gray-500 mb-1">Fecha de Creación</h3>
               <p className="text-gray-900">{new Date(sheep.created_at).toLocaleDateString('es-ES', {

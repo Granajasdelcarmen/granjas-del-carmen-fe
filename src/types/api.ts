@@ -1,4 +1,5 @@
 // API Response Types - Compatible with Backend
+import { AnimalSpecies } from 'src/constants/animals';
 
 // Base API Response
 export interface ApiResponse<T> {
@@ -12,9 +13,26 @@ export interface ApiError {
 }
 
 // Generic Types
-export type AnimalType = 'RABBIT' | 'COW' | 'SHEEP' | 'CHICKEN' | 'OTHER';
+export type AnimalType = AnimalSpecies | 'CHICKEN' | 'OTHER';
 export type Gender = 'MALE' | 'FEMALE';
 export type Role = 'admin' | 'user' | 'viewer' | 'trabajador';
+export type AnimalOrigin = 'BORN' | 'PURCHASED';
+
+// Parent animal info (minimal info for relationships)
+export interface ParentAnimalInfo {
+  id: string;
+  name: string;
+  species?: AnimalType;
+}
+
+// Child animal info (minimal info for relationships)
+export interface ChildAnimalInfo {
+  id: string;
+  name: string;
+  species?: AnimalType;
+  gender?: Gender;
+  birth_date?: string;
+}
 
 // Base Animal interface - shared fields for all animals
 export interface BaseAnimal {
@@ -24,10 +42,23 @@ export interface BaseAnimal {
   image?: string;
   birth_date?: string;
   gender?: Gender;
+  origin?: AnimalOrigin;
+  mother_id?: string;
+  mother?: ParentAnimalInfo;
+  father_id?: string;
+  father?: ParentAnimalInfo;
+  purchase_date?: string;
+  purchase_price?: number;
+  purchase_vendor?: string;
+  is_breeder?: boolean;
   discarded: boolean;
   discarded_reason?: string;
+  slaughtered?: boolean;
+  slaughtered_date?: string;
+  in_freezer?: boolean;
   user_id?: string;
   corral_id?: string;
+  children?: ChildAnimalInfo[];
   created_at: string;
   updated_at: string;
 }
@@ -38,6 +69,13 @@ export interface BaseAnimalCreate {
   image?: string;
   birth_date?: string;
   gender?: Gender;
+  origin?: AnimalOrigin;
+  mother_id?: string;
+  father_id?: string;
+  purchase_date?: string;
+  purchase_price?: number;
+  purchase_vendor?: string;
+  is_breeder?: boolean;
   user_id?: string;
   corral_id?: string;
 }
@@ -47,6 +85,13 @@ export interface BaseAnimalUpdate {
   image?: string;
   birth_date?: string;
   gender?: Gender;
+  origin?: AnimalOrigin;
+  mother_id?: string;
+  father_id?: string;
+  purchase_date?: string;
+  purchase_price?: number;
+  purchase_vendor?: string;
+  is_breeder?: boolean;
   user_id?: string;
   corral_id?: string;
 }
@@ -220,4 +265,168 @@ export interface LoginUrlResponse {
 
 export interface LogoutUrlResponse {
   logoutUrl: string;
+}
+
+// Rabbit Litter Types
+export interface RabbitLitterCreate {
+  mother_id: string;
+  father_id?: string;
+  birth_date: string;
+  count: number;
+  genders?: Gender[];
+  name_prefix?: string;
+  corral_id?: string;
+}
+
+export interface RabbitLitterResponse {
+  litter: Array<{
+    id: string;
+    name: string;
+    gender?: Gender;
+    birth_date?: string;
+    mother_id?: string;
+    father_id?: string;
+  }>;
+  count: number;
+  mother_id: string;
+  father_id?: string;
+}
+
+// Dead Offspring Types
+export interface DeadOffspring {
+  id: string;
+  mother_id: string;
+  father_id?: string;
+  birth_date: string;
+  death_date: string;
+  species?: AnimalType;
+  count: number;
+  notes?: string;
+  suspected_cause?: string;
+  recorded_by: string;
+  created_at: string;
+}
+
+export interface DeadOffspringCreate {
+  mother_id: string;
+  father_id?: string;
+  birth_date: string;
+  count: number;
+  notes?: string;
+  suspected_cause?: string;
+  recorded_by: string;
+}
+
+// Alert Types
+export type AlertStatus = 'PENDING' | 'ACKNOWLEDGED' | 'DONE' | 'EXPIRED';
+export type AlertPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+
+export interface Alert {
+  id: number;
+  name: string;
+  description?: string;
+  init_date: string;
+  max_date: string;
+  status: AlertStatus;
+  priority: AlertPriority;
+  animal_type?: AnimalType;
+  animal_id?: string;
+  corral_id?: string;
+  event_id?: number;
+  declined_reason?: string;
+  rabbit_ids?: string[]; // Lista de IDs de conejos para alertas agrupadas
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AlertRabbit {
+  id: string;
+  name: string;
+  birth_date?: string;
+  gender?: Gender;
+  slaughtered?: boolean;
+  in_freezer?: boolean;
+}
+
+export interface DeclineAlertRequest {
+  reason: string;
+}
+
+// Inventory Types
+export type InventoryProductType = 
+  | 'MEAT_RABBIT' 
+  | 'MEAT_CHICKEN' 
+  | 'MEAT_COW' 
+  | 'MEAT_SHEEP' 
+  | 'EGGS' 
+  | 'MILK' 
+  | 'CHEESE' 
+  | 'BUTTER' 
+  | 'WOOL' 
+  | 'HONEY' 
+  | 'WAX' 
+  | 'OTHER';
+
+export type InventoryUnit = 'KG' | 'GRAMS' | 'LITERS' | 'UNITS' | 'DOZENS';
+
+export type InventoryStatus = 'AVAILABLE' | 'RESERVED' | 'SOLD' | 'EXPIRED' | 'DISCARDED';
+
+export type InventoryTransactionType = 'ENTRY' | 'EXIT' | 'ADJUSTMENT';
+
+export interface InventoryProduct {
+  id: string;
+  product_type: InventoryProductType;
+  product_name: string;
+  quantity: number;
+  unit: InventoryUnit;
+  production_date: string;
+  expiration_date?: string;
+  location?: string;
+  unit_price?: number;
+  status: InventoryStatus;
+  animal_id?: string;
+  created_by: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface InventoryTransaction {
+  id: string;
+  product_id: string;
+  transaction_type: InventoryTransactionType;
+  quantity: number;
+  reason?: string;
+  sale_id?: string;
+  user_id: string;
+  notes?: string;
+  created_at: string;
+}
+
+export interface InventoryProductCreate {
+  product_type: InventoryProductType;
+  product_name: string;
+  quantity: number;
+  unit: InventoryUnit;
+  production_date?: string;
+  expiration_date?: string;
+  location?: string;
+  unit_price?: number;
+  animal_id?: string;
+  notes?: string;
+  reason?: string;
+}
+
+export interface InventoryProductUpdate {
+  product_name?: string;
+  quantity?: number;
+  unit_price?: number;
+  location?: string;
+  expiration_date?: string;
+  notes?: string;
+}
+
+export interface SellProductRequest {
+  quantity: number;
+  sale_id?: string;
 }

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Modal } from 'src/components/Common/Modal';
-import { useDiscardCow } from 'src/hooks/useCows';
+import { useDiscardAnimal } from 'src/hooks/useAnimals';
+import { ANIMAL_SPECIES } from 'src/constants/animals';
 import { Cow } from 'src/types/api';
+
+const SPECIES = ANIMAL_SPECIES.COW;
 
 interface CowDiscardModalProps {
   cow: Cow | null;
@@ -18,7 +21,7 @@ export function CowDiscardModal({
 }: CowDiscardModalProps) {
   const [reason, setReason] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const discardMutation = useDiscardCow();
+  const discardMutation = useDiscardAnimal(SPECIES);
 
   if (!cow) return null;
 

@@ -11,7 +11,7 @@ interface CowsListProps {
   onDeleteCow?: (cowId: string) => void;
 }
 
-export function CowsList({ cows, isLoading, onEditCow, onDeleteCow }: CowsListProps) {
+export const CowsList = React.memo(function CowsList({ cows, isLoading, onEditCow, onDeleteCow }: CowsListProps) {
   const [selectedCow, setSelectedCow] = useState<Cow | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
@@ -84,6 +84,6 @@ export function CowsList({ cows, isLoading, onEditCow, onDeleteCow }: CowsListPr
       />
     </>
   );
-}
+});
 
 

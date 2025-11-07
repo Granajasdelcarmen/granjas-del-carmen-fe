@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Modal } from 'src/components/Common/Modal';
-import { useDiscardRabbit } from 'src/hooks/useRabbits';
+import { useDiscardAnimal } from 'src/hooks/useAnimals';
 import { Rabbit } from 'src/types/api';
+import { ANIMAL_SPECIES } from 'src/constants/animals';
+
+const SPECIES = ANIMAL_SPECIES.RABBIT;
 
 interface RabbitDiscardModalProps {
   rabbit: Rabbit | null;
@@ -18,7 +21,7 @@ export function RabbitDiscardModal({
 }: RabbitDiscardModalProps) {
   const [reason, setReason] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const discardMutation = useDiscardRabbit();
+  const discardMutation = useDiscardAnimal(SPECIES);
 
   if (!rabbit) return null;
 
@@ -110,8 +113,8 @@ export function RabbitDiscardModal({
                 </>
               ) : (
                 <>
-                  <span>💰</span>
-                  <span>Vender</span>
+                  <span>🗑️</span>
+                  <span>Descartar</span>
                 </>
               )}
             </button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTotalSales } from 'src/hooks/useTotalSales';
 import { TotalSalesTable } from './TotalSalesTable';
 import { SectionWrapper } from 'src/components/Common/SectionWrapper';

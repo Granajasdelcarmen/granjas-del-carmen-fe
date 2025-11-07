@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Modal } from 'src/components/Common/Modal';
-import { useDiscardSheep } from 'src/hooks/useSheep';
+import { useDiscardAnimal } from 'src/hooks/useAnimals';
 import { Sheep } from 'src/types/api';
+import { ANIMAL_SPECIES } from 'src/constants/animals';
+
+const SPECIES = ANIMAL_SPECIES.SHEEP;
 
 interface SheepDiscardModalProps {
   sheep: Sheep | null;
@@ -18,7 +21,7 @@ export function SheepDiscardModal({
 }: SheepDiscardModalProps) {
   const [reason, setReason] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const discardMutation = useDiscardSheep();
+  const discardMutation = useDiscardAnimal(SPECIES);
 
   if (!sheep) return null;
 

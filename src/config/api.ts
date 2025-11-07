@@ -1,7 +1,20 @@
 // Configuración de la API - Compatible con Backend Flask
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000/api/v1';
+
+// Debug: Ver qué URL está usando (solo en desarrollo)
+if (process.env.NODE_ENV === 'development') {
+  console.log('🔧 Frontend API Config:', {
+    API_URL,
+    API_BASE_URL,
+    'REACT_APP_API_URL from env': process.env.REACT_APP_API_URL,
+    'REACT_APP_API_BASE_URL from env': process.env.REACT_APP_API_BASE_URL
+  });
+}
+
 export const API_CONFIG = {
-  BASE_URL: process.env.REACT_APP_API_URL || 'http://localhost:3000',
-  API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000/api/v1',
+  BASE_URL: API_URL,
+  API_BASE_URL: API_BASE_URL,
   TIMEOUT: 10000, // 10 segundos
 };
 
@@ -23,6 +36,7 @@ export const API_ENDPOINTS = {
   RABBIT_BY_ID: (id: string) => `/rabbits/${id}`,
   RABBIT_DISCARD: (id: string) => `/rabbits/${id}/discard`,
   RABBIT_SELL: (id: string) => `/rabbits/${id}/sell`,
+  RABBIT_SLAUGHTER: (id: string) => `/rabbits/${id}/slaughter`,
   RABBITS_BY_GENDER: (gender: string) => `/rabbits/gender/${gender}`,
   
   // Cow endpoints
@@ -55,4 +69,18 @@ export const API_ENDPOINTS = {
   TOTAL_SALES: '/finance/total-sales',
   EXPENSES: '/finance/expenses',
   EXPENSE_BY_ID: (id: string) => `/finance/expenses/${id}`,
+  
+  // Alert endpoints
+  ALERTS: '/alerts',
+  ALERT_COMPLETE: (id: number) => `/alerts/${id}/complete`,
+  ALERT_DECLINE: (id: number) => `/alerts/${id}/decline`,
+  ALERT_RABBITS: (id: number) => `/alerts/${id}/rabbits`,
+  
+  // Inventory Product endpoints
+  INVENTORY_PRODUCTS: '/inventory-products',
+  INVENTORY_PRODUCT_BY_ID: (id: string) => `/inventory-products/${id}`,
+  INVENTORY_PRODUCT_ADD: '/inventory-products/add',
+  INVENTORY_PRODUCT_SELL: (id: string) => `/inventory-products/${id}/sell`,
+  INVENTORY_PRODUCT_TRANSACTIONS: (id: string) => `/inventory-products/${id}/transactions`,
+  INVENTORY_PRODUCTS_EXPIRED: '/inventory-products/expired',
 };

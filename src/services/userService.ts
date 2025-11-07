@@ -1,6 +1,7 @@
 import { apiService } from './api';
 import { API_ENDPOINTS } from 'src/config/api';
 import { User, UserCreate, ApiResponse } from 'src/types/api';
+import { logger } from 'src/utils/logger';
 
 class UserService {
   /**
@@ -11,7 +12,7 @@ class UserService {
       const users = await apiService.getBackendResponse<User[]>(API_ENDPOINTS.USERS);
       return users;
     } catch (error) {
-      console.error('Error fetching users:', error);
+      logger.error('Error fetching users', error);
       throw error;
     }
   }
@@ -24,7 +25,7 @@ class UserService {
       const user = await apiService.getBackendResponse<User>(API_ENDPOINTS.USER_BY_ID(id));
       return user;
     } catch (error) {
-      console.error('Error fetching user:', error);
+      logger.error('Error fetching user', error);
       throw error;
     }
   }
@@ -37,7 +38,7 @@ class UserService {
       const user = await apiService.postBackendResponse<User>(API_ENDPOINTS.USERS, userData);
       return user;
     } catch (error) {
-      console.error('Error creating user:', error);
+      logger.error('Error creating user', error);
       throw error;
     }
   }
@@ -50,7 +51,7 @@ class UserService {
       const user = await apiService.putBackendResponse<User>(API_ENDPOINTS.USER_BY_ID(id), userData);
       return user;
     } catch (error) {
-      console.error('Error updating user:', error);
+      logger.error('Error updating user', error);
       throw error;
     }
   }
@@ -62,7 +63,7 @@ class UserService {
     try {
       await apiService.deleteBackendResponse<void>(API_ENDPOINTS.USER_BY_ID(id));
     } catch (error) {
-      console.error('Error deleting user:', error);
+      logger.error('Error deleting user', error);
       throw error;
     }
   }
@@ -75,7 +76,7 @@ class UserService {
       const user = await apiService.putBackendResponse<User>(API_ENDPOINTS.USER_ROLE_UPDATE(id), { role });
       return user;
     } catch (error) {
-      console.error('Error updating user role:', error);
+      logger.error('Error updating user role', error);
       throw error;
     }
   }
@@ -90,7 +91,7 @@ class UserService {
       const response = await apiService.getFullResponse<User[]>(API_ENDPOINTS.USERS);
       return response;
     } catch (error) {
-      console.error('Error fetching users with message:', error);
+      logger.error('Error fetching users with message', error);
       throw error;
     }
   }

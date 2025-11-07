@@ -4,39 +4,44 @@ interface StatsCardProps {
   title: string;
   value: string | number;
   icon: string;
-  color: 'blue' | 'green' | 'yellow' | 'red' | 'purple';
+  color: 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'orange' | 'stone';
   subtitle?: string;
+  featured?: boolean;
 }
 
-export function StatsCard({ title, value, icon, color, subtitle }: StatsCardProps) {
+export function StatsCard({ title, value, icon, color, subtitle, featured = false }: StatsCardProps) {
   const getColorClasses = (color: string) => {
     switch (color) {
       case 'blue':
-        return 'bg-blue-500 text-white';
+        return 'bg-blue-300 text-blue-900';
       case 'green':
-        return 'bg-green-500 text-white';
+        return 'bg-green-300 text-green-900';
       case 'yellow':
-        return 'bg-yellow-500 text-white';
+        return 'bg-yellow-300 text-yellow-900';
       case 'red':
-        return 'bg-red-500 text-white';
+        return 'bg-red-300 text-red-900';
       case 'purple':
-        return 'bg-purple-500 text-white';
+        return 'bg-purple-300 text-purple-900';
+      case 'orange':
+        return 'bg-orange-300 text-orange-900';
+      case 'stone':
+        return 'bg-stone-300 text-stone-900';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-gray-300 text-gray-900';
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <div className="flex items-center">
-        <div className={`p-3 rounded-lg ${getColorClasses(color)}`}>
-          <span className="text-2xl">{icon}</span>
+    <div className="bg-gradient-to-br from-stone-50 to-stone-100 rounded-lg shadow-sm border border-stone-200 p-2.5 hover:shadow-md transition-shadow duration-200">
+      <div className="flex items-center gap-2">
+        <div className={`p-1.5 rounded-lg ${getColorClasses(color)} shadow-sm flex-shrink-0`}>
+          <span className="text-base">{icon}</span>
         </div>
-        <div className="ml-4">
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-semibold text-gray-900">{value}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-medium text-stone-600 mb-0.5 truncate">{title}</p>
+          <p className="text-lg font-bold text-stone-800 mb-0.5">{value}</p>
           {subtitle && (
-            <p className="text-xs text-gray-500">{subtitle}</p>
+            <p className="text-[10px] text-stone-600 truncate leading-tight">{subtitle}</p>
           )}
         </div>
       </div>

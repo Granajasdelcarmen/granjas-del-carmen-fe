@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { useSheep, useSheepByGender, useRefetchSheep } from 'src/hooks/useSheep';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useAnimals, useAnimalsByGender, useRefetchAnimals } from 'src/hooks/useAnimals';
 import { SheepList } from './SheepList';
 import { SheepCreateModal } from './SheepCreateModal';
 import { AnimalSectionHeader } from 'src/components/Common/AnimalSectionHeader';
+import { ANIMAL_SPECIES } from 'src/constants/animals';
+
+const SPECIES = ANIMAL_SPECIES.SHEEP;
 
 export function SheepSection() {
   const [genderFilter, setGenderFilter] = useState<'ALL' | 'MALE' | 'FEMALE'>('ALL');
@@ -12,35 +15,37 @@ export function SheepSection() {
   const sortByValue = sortOrder === "none" ? undefined : sortOrder;
   const discardedValue = discardedFilter === "active" ? false : discardedFilter === "discarded" ? true : null;
   
-  const { data: allSheep, isLoading: isLoadingAll, error: errorAll, isError: isErrorAll } = useSheep(
-    sortByValue, discardedValue
+  const { data: allSheep, isLoading: isLoadingAll, error: errorAll, isError: isErrorAll } = useAnimals(
+    SPECIES, sortByValue, discardedValue
   );
-  const { data: maleSheep, isLoading: isLoadingMale } = useSheepByGender('MALE', genderFilter === 'MALE', sortByValue, discardedValue);
-  const { data: femaleSheep, isLoading: isLoadingFemale } = useSheepByGender('FEMALE', genderFilter === 'FEMALE', sortByValue, discardedValue);
+  // Only fetch gender-specific data when that filter is active
+  const { data: maleSheep, isLoading: isLoadingMale } = useAnimalsByGender(SPECIES, 'MALE', genderFilter === 'MALE', sortByValue, discardedValue);
+  const { data: femaleSheep, isLoading: isLoadingFemale } = useAnimalsByGender(SPECIES, 'FEMALE', genderFilter === 'FEMALE', sortByValue, discardedValue);
   
-  const refetchSheep = useRefetchSheep();
+  const refetchSheep = useRefetchAnimals(SPECIES);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  const getCurrentData = () => {
+  // Memoize current data calculation
+  const { data: sheep, isLoading } = useMemo(() => {
     switch (genderFilter) {
       case 'MALE':
-        return { data: maleSheep, isLoading: isLoadingMale };
+        return { data: maleSheep || [], isLoading: isLoadingMale };
       case 'FEMALE':
-        return { data: femaleSheep, isLoading: isLoadingFemale };
+        return { data: femaleSheep || [], isLoading: isLoadingFemale };
       default:
-        return { data: allSheep, isLoading: isLoadingAll };
+        return { data: allSheep || [], isLoading: isLoadingAll };
     }
-  };
+  }, [genderFilter, allSheep, maleSheep, femaleSheep, isLoadingAll, isLoadingMale, isLoadingFemale]);
 
-  const { data: sheep, isLoading } = getCurrentData();
   const error = errorAll;
   const isError = isErrorAll;
 
-  const handleRefetch = () => {
+  const handleRefetch = useCallback(() => {
     refetchSheep();
-  };
+  }, [refetchSheep]);
 
-  const getFilterCount = () => {
+  // Memoize filter count calculation
+  const filterCount = useMemo(() => {
     switch (genderFilter) {
       case 'MALE':
         return Array.isArray(maleSheep) ? maleSheep.length : 0;
@@ -49,14 +54,14 @@ export function SheepSection() {
       default:
         return Array.isArray(allSheep) ? allSheep.length : 0;
     }
-  };
+  }, [genderFilter, allSheep, maleSheep, femaleSheep]);
 
   return (
     <div className="bg-white rounded-lg shadow-sm border">
       <AnimalSectionHeader
         animalType="sheep"
         animalTypeLabel="Ovejas"
-        count={getFilterCount()}
+        count={filterCount}
         genderFilter={genderFilter}
         discardedFilter={discardedFilter}
         sortOrder={sortOrder}
@@ -84,7 +89,7 @@ export function SheepSection() {
           </div>
         ) : (
           <>
-            <SheepList sheep={sheep || []} isLoading={isLoading} />
+            <SheepList sheep={sheep} isLoading={isLoading} />
             <SheepCreateModal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
           </>
         )}

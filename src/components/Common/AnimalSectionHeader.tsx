@@ -19,6 +19,7 @@ interface AnimalSectionHeaderProps {
   onRefetch: () => void;
   onCreateClick: () => void;
   createButtonLabel: string; // "Añadir conejo", "Añadir vaca", etc.
+  extraButtons?: React.ReactNode; // Botones adicionales (opcional)
 }
 
 const animalConfig: Record<AnimalType, { icon: string; singular: string }> = {
@@ -41,6 +42,7 @@ export function AnimalSectionHeader({
   onRefetch,
   onCreateClick,
   createButtonLabel,
+  extraButtons,
 }: AnimalSectionHeaderProps) {
   const config = animalConfig[animalType];
 
@@ -161,6 +163,8 @@ export function AnimalSectionHeader({
               </svg>
             )}
           </button>
+
+          {extraButtons}
 
           <button
             onClick={onCreateClick}

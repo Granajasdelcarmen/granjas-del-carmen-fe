@@ -11,7 +11,7 @@ interface SheepListProps {
   onDeleteSheep?: (sheepId: string) => void;
 }
 
-export function SheepList({ sheep, isLoading, onEditSheep, onDeleteSheep }: SheepListProps) {
+export const SheepList = React.memo(function SheepList({ sheep, isLoading, onEditSheep, onDeleteSheep }: SheepListProps) {
   const [selectedSheep, setSelectedSheep] = useState<Sheep | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
@@ -84,6 +84,6 @@ export function SheepList({ sheep, isLoading, onEditSheep, onDeleteSheep }: Shee
       />
     </>
   );
-}
+});
 
 
