@@ -1,27 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './components/auth/AuthProvider';
+import AuthBootstrap from './components/auth/AuthBootstrap';
+import AuthGate from './components/auth/AuthGate';
 import MainLayout from './components/layout';
+import { useAuth } from './hooks/useAuth';
 
+// Create a client
+const queryClient = new QueryClient();
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <MainLayout/>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <AuthBootstrap />
+        <AuthGate>
+          <MainLayout/>
+        </AuthGate>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 
